@@ -5,3 +5,4 @@ Project for LaunchCode's Liftoff Program - Eva Group 1 - Atlas
 - Alex adding to README.md
 - Landon adding to README.md
 - Madeline adding to README.md
+- testing commit again with new email
