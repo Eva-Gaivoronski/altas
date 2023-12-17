@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>Get Cultured!</h1>
-<p>Hello, world!</p>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{fragments :: head}"></head>
 
+<div th:replace="~{fragments :: page-header}"></div>
+
+<body>
+     <p>Welcome, search for a tour in your area or add your own to the collection </p>
 </body>
 </html>
