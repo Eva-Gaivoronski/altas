@@ -1,6 +1,7 @@
 package liftoff.atlas.getcultured.models;
 
 
+import java.util.Objects;
 
 public class Tours {
 
@@ -54,4 +55,21 @@ public class Tours {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return tourName + " (" + summaryDescription + ") ";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tours tours = (Tours) o;
+        return id == tours.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
