@@ -3,13 +3,17 @@ package liftoff.atlas.getcultured.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
 @Entity
 public class Tour extends AbstractEntity {
 
+    @NotBlank(message = "Title is required.")
     private String tourName;
+
+    @Size(min = 15, max = 500, message = "Summary description must be 15-500 characters long.")
     private String summaryDescription;
     private Double estimatedLength;
     private Double estimatedTravelTime;

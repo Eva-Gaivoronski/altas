@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+<header th:replace="~{fragments :: page-header}"></header>
+<div id="admin-bar">
+    <div class="nav">
+        <a class="navlink" href="/tours">View All Tours</a>
+        <span class="faux-link">Search</span>
+        <span class="faux-link">Delete</span>
+    </div>
+</div>
+    <main>
+        <form action='/tours/add' method='POST'>
+            <h3>Add a Tour to the Collection</h3>
+            <div class="container">
+                <div class="row">
+                    <div class="form-item">
+                        <label th:for="name">Tour Name</label>
+                        <input th:field="${tour.tourName}" />
+                        <p class="error" th:errors="${tour.tourName}"></p>
+                    </div>
+                    <div class="form-item">
+                        <label th:for="summaryDescription">Description</label>
+                        <input th:field="${tour.summaryDescription}" />
+                        <p class="error" th:errors="${tour.summaryDescription}"></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-item col-2">
+                        <label th:for="length">Est. Length</label>
+                        <input th:field="${tour.estimatedLength}" />
+                    </div>
+                    <div class="form-item col-2">
+                        <label th:for="travelTime">Est. Travel Time</label>
+                        <input th:field="${tour.estimatedTravelTime}" />
+                    </div>
+                </div>
+                <div class="form-item">
+                <label th:for="userRating">Tour Rating</label>
+                <input th:field="${tour.userRating}" />
+            </div>
+                <div class="row">
+                    <div class="form-item col-2">
+                        <label th:for="author">Author</label>
+                        <input th:field="${tour.author}" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-item col-3">
+                        <label th:for="location">Location Latitude</label>
+                        <input th:field="${tour.location.latitude}" />
+                    </div>
+                    <div class="form-item col-3">
+                        <label th:for="location">Location Longitude</label>
+                        <input th:field="${tour.location.longitude}" />
+                    </div>
+                    <div class="form-item col-2">
+                        <label th:for="city">City</label>
+                        <input th:field="${tour.city}" />
+                    </div>
+                </div>
+
+            </div>
+
+            <button type='submit'>Add</button>
+        </form>
+    </main>
+
+</body>
+</html>

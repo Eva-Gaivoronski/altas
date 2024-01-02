@@ -2,29 +2,24 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org/">
 <head th:fragment="head">
     <meta charset="UTF-8"/>
-
     <!-- Add Bootstrap stylesheets and script here when ready -->
-<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>-->
-<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />-->
-
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Urbanist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
     <title>Get Cultured</title>
 </head>
 <body>
-
-<div th:fragment="page-header" class="navbar navbar-inverse navbar-fixed-top">
-
-    <div class="navbar-header">
-        <a th:href="@{/}" class="navbar-brand">Get Cultured</a>
-    </div>
-    <div class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-            <li>Admin Panel</li>
-            <li>Search</li>
-            <li>Tours</li>
-        </ul>
-    </div>
-</div>
+    <header th:fragment="page-header">
+        <div id="mag">Get Cultured</div>
+        <div class="nav">
+            <span id="admin-panel" class="bold"><a href="/">ADMIN PANEL</a></span>
+            <span class="faux-link">Search</span>
+            <a class="navlink" href="/tours">Tours</a>
+        </div>
+    </header>
 
 </body>
 </html>

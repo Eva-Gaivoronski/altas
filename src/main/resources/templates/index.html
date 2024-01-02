@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org/">
 <head th:replace="~{fragments :: head}"></head>
-
-<div th:replace="~{fragments :: page-header}"></div>
-
-<body>
-     <p>Welcome, search for a tour in your area or add your own to the collection </p>
-</body>
+     <body>
+          <header th:replace="~{fragments :: page-header}"></header>
+          <main>
+               <p>Welcome, search for a tour in your area or add your own to the collection </p>
+          </main>
+          <img th:src="@{/images/mapBanner.jpeg}" width="100%"/>
+     </body>
 </html>

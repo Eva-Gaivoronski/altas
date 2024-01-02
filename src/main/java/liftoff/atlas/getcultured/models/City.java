@@ -39,4 +39,9 @@ public class City extends AbstractEntity {
     public void setTours(List<Tour> tours) {
         this.tours = tours;
     }
+
+    @Override
+    public String toString() {
+        return getName() + ", " + state;
+    }
 }
