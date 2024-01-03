@@ -7,40 +7,48 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
+import java.util.Optional;
 
 @Controller
-@RequestMapping("/city")
+@RequestMapping("city")
 public class CityController {
 
     @Autowired
     private CityRepository cityRepository;
 
-    @GetMapping
-    public String displayCityPage(Model model) {
-        List<City> cities = (List<City>) cityRepository.findAll();
-        model.addAttribute("city", cities);
-        return "/cities/index";
+    @RequestMapping("/")
+    public String index(Model model) {
+        model.addAttribute("city", "Add City");
+        model.addAttribute("city", cityRepository.findAll());
+        return "/city/index";
     }
 
     @GetMapping("/add")
     public String displayAddCityForm(Model model){
         model.addAttribute("city", new City());
-        return "cities/add";
+        return "city/add";
     }
 
     @PostMapping("/add")
     public String processAddCityForm(@ModelAttribute @Valid City city, Errors errors) {
         if (errors.hasErrors()) {
-            return "cities/add";
+            return "city/add";
         } else {
             cityRepository.save(city);
             return "redirect:/city";
+        }
+    }
+
+    @GetMapping("view/{cityId}")
+    public String displayViewCity(Model model, @PathVariable int cityId) {
+        Optional optCity = cityRepository.findById(cityId);
+        if (optCity.isPresent()) {
+            City city = (City) optCity.get();
+            model.addAttribute("city", city);
+            return "city/view";
+        } else {
+            return "redirect:../";
         }
     }
 

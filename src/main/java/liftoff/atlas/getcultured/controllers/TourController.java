@@ -2,6 +2,7 @@ package liftoff.atlas.getcultured.controllers;
 
 import jakarta.validation.Valid;
 import liftoff.atlas.getcultured.models.Tour;
+import liftoff.atlas.getcultured.models.data.CityRepository;
 import liftoff.atlas.getcultured.models.data.TourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,9 @@ public class TourController {
     @Autowired
     private TourRepository tourRepository;
 
+    @Autowired
+    private CityRepository cityRepository;
+
     @GetMapping("")
     public String displayAllTours(Model model) {
         model.addAttribute("tours", tourRepository.findAll());
@@ -29,6 +33,7 @@ public class TourController {
     // Corresponds to http://localhost:8080/tours/add
     @GetMapping("/add")
     public String displayAddTourForm(Model model){
+        model.addAttribute("city", cityRepository.findAll());
         model.addAttribute("tour", new Tour());
         return "tours/add";
     }

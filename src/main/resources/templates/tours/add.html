@@ -57,7 +57,11 @@
                     </div>
                     <div class="form-item col-2">
                         <label th:for="city">City</label>
-                        <input th:field="${tour.city}" />
+                        <select name="cityId">
+                            <option th:each="city : ${city}"
+                                    th:text="${city.name}"
+                                    th:value="${city.id}"></option>
+                        </select>
                     </div>
                 </div>
 
