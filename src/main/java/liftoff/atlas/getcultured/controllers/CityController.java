@@ -11,17 +11,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("city")
+@RequestMapping("/city")
 public class CityController {
 
     @Autowired
     private CityRepository cityRepository;
 
-    @RequestMapping("/")
-    public String index(Model model) {
-        model.addAttribute("city", "Add City");
+   @GetMapping("")
+    public String displayAllCities(Model model) {
         model.addAttribute("city", cityRepository.findAll());
-        return "/city/index";
+        return "city/index";
     }
 
     @GetMapping("/add")

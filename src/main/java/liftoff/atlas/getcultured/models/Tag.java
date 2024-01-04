@@ -18,6 +18,8 @@ public class Tag extends AbstractEntity {
     @ManyToOne
     private TagGroup tagGroup;
 
+    public Tag() {
+    }
 
     public Tag(String label, String color, TagGroup tagGroup) {
         super();
@@ -25,7 +27,6 @@ public class Tag extends AbstractEntity {
         this.color = color;
         this.tagGroup = tagGroup;
     }
-
 
     public String getLabel() {
         return label;

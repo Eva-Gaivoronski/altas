@@ -3,18 +3,37 @@
 <head th:replace="~{fragments :: head}"></head>
 <body>
 <header th:replace="~{fragments :: page-header}"></header>
+    <div id="admin-bar">
+        <div class="nav">
+            <a class="navlink" href="/city/add">Add City</a>
+        </div>
+    </div>
 
-<p th:unless="${city} and ${city.size()}">no cities!</p>
+<main>
 
-<div class="container body-content">
-    <h2>City</h2>
-    <ul>
-        <li th:each="city : ${city}">
-            <a th:hred="@{'/city/view/' + ${city.id}" th:text="${city.name}"></a>
-        </li>
-    </ul>
-    <a th:hred="@{'city/add'}">Add City</a>
-</div>
+    <table class="table table striped">
+        <thead>
+        <tr>
+            <th>City</th>
+            <th>State</th>
+        </tr>
+        </thead>
+        <tr th:each="city : ${city}">
+            <td th:text="${city.name}"></td>
+            <td th:text="${city.state}"></td>
+        </tr>
+    </table>
 
+<!--    <p th:unless="${city} and ${city.size()}">no cities!</p>-->
+<!--    <div class="container body-content">-->
+<!--        <h2>Cities</h2>-->
+<!--        <ul>-->
+<!--            <li th:each="city : ${city}">-->
+<!--                <a th:href="@{'/city/view/' + ${city.id}" th:text="${city.name}"></a>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--        <a th:hred="@{'city/add'}">Add City</a>-->
+<!--    </div>-->
+</main>
 </body>
 </html>

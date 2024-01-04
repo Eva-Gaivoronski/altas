@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+<header th:replace="~{fragments :: page-header}"></header>
+<div id="admin-bar">
+    <div class="nav">
+        <a class="navlink" href="/tours">View All Tours</a>
+        <span class="faux-link">Search</span>
+        <span class="faux-link">Delete</span>
+    </div>
+</div>
+
+<main>
+    <form action="/tags/add" method="POST">
+        <h3>Add a Group Tag</h3>
+        <div class="container">
+            <div class="row">
+                <div class="form-item">
+                    <label th:for="label">Tag Group Name</label>
+                    <input th:field="${tagGroup.label}" />
+                    <p class="error" th:errors="${tagGroup.label}"></p>
+                </div>
+                <div class="form-item">
+                    <label th:for="color">Tag Group Domain</label>
+                    <input th:field="${tagGroup.domain}" />
+                    <p class="error" th:errors="${tagGroup.domain}"></p>
+                </div>
+            </div>
+            <div class="form-item">
+                <label th:for="name">Add Tags</label>
+                <select name="tags">
+                    <option th:each="tag : ${tagGroup.tags}"
+                            th:text="${tagGroup.tags.name}"
+                            th:value="${tagGroup.tags.id}">
+                    </option>
+                </select>
+                <!--                    <a th:href="@{'/tagGroup/add'}">Add Tag Group</a>-->
+            </div>
+        </div>
+        <button type="submit">Add Tag Group</button>
+    </form>
+</main>
+
+</body>
+</html>
