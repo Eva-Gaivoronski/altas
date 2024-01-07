@@ -12,11 +12,12 @@ public class GoogleController {
 
 
 //    getCityGeocode returns several instances of latitude & longitude necessary to conduct
-    @PostMapping("results")
+    @PostMapping("city")
     private static void getCityGeocode(String searchTerm)
     {
-        searchTerm = "Philadelphia";
-        final String apiKey = "&key=" + "ENV_APIKEY_HERE";
+
+        final String apiKey = "&key=\n"
+                + "ENV_APIKEY_HERE";
         final String uriStart = "https://maps.googleapis.com/maps/api/geocode/json?address=";
         final String uriEnd = "&region=us";
         final String uri = uriStart + searchTerm + uriEnd + apiKey;
