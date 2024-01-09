@@ -1,9 +1,13 @@
 package liftoff.atlas.getcultured.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -15,17 +19,17 @@ public class Tag extends AbstractEntity {
     @Pattern(regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message = "Invalid color format. Use hex code.")
     private String color;
 
-    @ManyToOne
-    private TagGroup tagGroup;
+    @ManyToMany(mappedBy = "tags")
+    private final List<Tour> tours = new ArrayList<>();
+
 
     public Tag() {
     }
 
-    public Tag(String label, String color, TagGroup tagGroup) {
+    public Tag(String label, String color) {
         super();
         this.label = label;
         this.color = color;
-        this.tagGroup = tagGroup;
     }
 
     public String getLabel() {
@@ -44,11 +48,8 @@ public class Tag extends AbstractEntity {
         this.color = color;
     }
 
-    public TagGroup getTagGroup() {
-        return tagGroup;
+    public List<Tour> getTours() {
+        return tours;
     }
 
-    public void setTagGroup(TagGroup tagGroup) {
-        this.tagGroup = tagGroup;
-    }
 }

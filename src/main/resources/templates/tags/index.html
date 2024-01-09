@@ -5,13 +5,24 @@
 <header th:replace="~{fragments :: page-header}"></header>
 <div id="admin-bar">
     <div class="nav">
-        <a class="navlink" th:href="/tags/add">Add Tag</a>
+        <a class="navlink" href="/tags/add">Add Tag</a>
         <span class="faux-link">Search</span>
         <span class="faux-link">Delete</span>
     </div>
 </div>
 <main>
     <h2>TAGS</h2>
+    <table class="table table striped">
+        <thead>
+        <tr>
+            <th>Tag Name</th>
+            <th>Label</th>
+        </tr>
+        </thead>
+        <tr th:each="tag : ${tags}">
+            <td th:text="${tag.name}"></td>
+            <td th:text="${tag.label}"></td>
+        </tr>
 </main>
 
 </body>

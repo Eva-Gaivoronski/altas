@@ -8,8 +8,6 @@
         <a class="navlink" href="/tours">View All Tours</a>
         <a class="navlink" href="/tags/add">Add Tag</a>
         <a class="navlink" href="/city/add">Add City</a>
-        <span class="faux-link">Search</span>
-        <span class="faux-link">Delete</span>
     </div>
 </div>
     <main>
@@ -65,6 +63,15 @@
                                     th:value="${city.id}"></option>
                         </select>
                         <a th:href="@{'/city/add'}">Add City</a>
+                    </div>
+                    <div class="form-item col-2">
+                        <label th:for="tag">Tags</label>
+                        <select name="tagId">
+                            <option th:each="tag : ${tags}"
+                                    th:text="${tag.name}"
+                                    th:value="${tag.id}"></option>
+                        </select>
+                        <a th:href="@{'/tags/add'}">Add Tag</a>
                     </div>
                 </div>
 
