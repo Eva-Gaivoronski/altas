@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+<header th:replace="~{fragments :: page-header}"></header>
+<div id="admin-bar">
+    <div class="nav">
+        <a class="navlink" href="/tours">View All Tours</a>
+        <a class="navlink" href="/tags/add">Add Tag</a>
+        <a class="navlink" href="/city/add">Add City</a>
+    </div>
+</div>
+    <main>
+        <form action='/tours/add' method='POST'>
+        <h3>Add a Tags to Your Tour</h3>
+            <div class="container">
+                <div class="row">
+                    <div class="form-item">
+                        <input type="hidden" th:field="tourTag.tour" />
+                        <select th:field="${tourTag.tag}">
+                            <option th:each="tag : ${tags}"
+                                    th:value="${tag.id}"
+                                    th:text="${tag.name}"
+                            ></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        <button type="submit">Add Tag</button>
+        </form>
+</main>
+</body>
+</html>

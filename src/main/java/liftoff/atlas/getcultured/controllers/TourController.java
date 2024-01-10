@@ -1,17 +1,19 @@
 package liftoff.atlas.getcultured.controllers;
 
 import jakarta.validation.Valid;
+import liftoff.atlas.getcultured.models.Tag;
 import liftoff.atlas.getcultured.models.Tour;
 import liftoff.atlas.getcultured.models.data.CityRepository;
+import liftoff.atlas.getcultured.models.data.TagRepository;
 import liftoff.atlas.getcultured.models.data.TourRepository;
+import liftoff.atlas.getcultured.models.dto.TourTagDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 
 @Controller
@@ -23,6 +25,9 @@ public class TourController {
 
     @Autowired
     private CityRepository cityRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     @GetMapping("")
     public String displayAllTours(Model model) {
@@ -47,4 +52,35 @@ public class TourController {
             return "redirect:/tours";
         }
     }
+
+    // This will allow you to add a tag to a specific tour
+    //responds to /tours/add-tag?tourId=tourId
+    @GetMapping("add-tag")
+    public String displayAddTagForm(@RequestParam Integer tourId, Model model) {
+        Optional<Tour> result = tourRepository.findById(tourId);
+        Tour tour = result.get();
+        model.addAttribute("title", "Add Tag to: " + tour.getName());
+        model.addAttribute("tags", tagRepository.findAll());
+        TourTagDTO tourTag = new TourTagDTO();
+        tourTag.setTours(tour);
+        model.addAttribute("tourTag", new TourTagDTO());
+        return "tours/add-tag.html";
+    }
+
+    @PostMapping("add-tag")
+    public String processAddTagForm(@ModelAttribute @Valid TourTagDTO tourTag,
+                                    Errors errors,
+                                    Model model){
+        if (!errors.hasErrors()) {
+            Tour tour = tourTag.getTour();
+            Tag tag = tourTag.getTag();
+            if (!tour.getTags().contains(tag)) {
+                tour.addTag(tag);
+                tourRepository.save(tour);
+            }
+            return "redirect:/tours";
+        }
+        return "redirect:add-tag";
+    }
+
 }

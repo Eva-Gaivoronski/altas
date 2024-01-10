@@ -7,18 +7,18 @@ import liftoff.atlas.getcultured.models.Tour;
 public class TourTagDTO {
 
     @NotNull
-    private Tour tours;
+    private Tour tour;
     @NotNull
     private Tag tag;
 
     public TourTagDTO(){}
 
-    public Tour getTours() {
-        return tours;
+    public Tour getTour() {
+        return tour;
     }
 
-    public void setTours(Tour tours) {
-        this.tours = tours;
+    public void setTours(Tour tour) {
+        this.tour = tour;
     }
 
     public Tag getTag() {
