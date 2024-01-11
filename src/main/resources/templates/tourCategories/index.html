@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+<header th:replace="~{fragments :: page-header}"></header>
+<div id="admin-bar">
+    <div class="nav">
+        <a class="navlink" href="/tourCategories/add">Add Category</a>
+        <a class="navlink" href="/tourCategories/delete">Delete Category</a>
+    </div>
+</div>
+    <main>
+        <h2>Tour Categories</h2>
+        <table class="table table striped">
+            <thead>
+                <tr>
+                    <th>Category Name</th>
+                </tr>
+                <tr th:each="category : ${categories}">
+                    <td th:text="${category.name}"></td>
+                </tr>
+            </thead>
+        </table>
+    </main>
+</body>
+</html>

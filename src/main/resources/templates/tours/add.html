@@ -55,6 +55,7 @@
                         <label th:for="location">Location Longitude</label>
                         <input th:field="${tour.location.longitude}" />
                     </div>
+                </div>
                     <div class="form-item col-2">
                         <label th:for="city">City</label>
                         <select name="cityId">
@@ -64,6 +65,17 @@
                         </select>
                         <a th:href="@{'/city/add'}">Add City</a>
                     </div>
+                    <div class="form-item col-2">
+                        <label th:for="tourCategory">Category</label>
+                        <select th:field="${tourCategory}">
+                            <option th:each="tourCategory : ${tourCategory}"
+                                    th:value="tourCategory.id"
+                                    th:text="${tourCategory}"
+                                    ></option>
+                        </select>
+                        <a th:href="@{'/tourCategories/add'}">Add Category</a>
+                    </div>
+                </div>
                     <div class="form-item col-2">
                         <label th:for="tag">Tags</label>
                         <select name="tagId">
@@ -75,7 +87,7 @@
                     </div>
                 </div>
 
-            </div>
+
 
             <button type='submit'>Add Tour</button>
         </form>

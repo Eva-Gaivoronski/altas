@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+<header th:replace="~{fragments :: page-header}"></header>
+<div id="admin-bar">
+    <div class="nav">
+        <a class="navlink" href="/tourCategories">View All Categories</a>
+        <a class="navlink" href="/tourCategories/add">Add Category</a>
+        <span class="faux-link">Search</span>
+    </div>
+</div>
+<main>
+    <form method="POST">
+        <h3>Delete a Category</h3>
+        <div class="container">
+            <th:block th:each="tourCategory: ${tourCategory}">
+                <div class="form-group">
+                    <label>
+                        <span th:text="${tourCategory}"></span>
+                        <input type="checkbox" name="tourCategoryIds" th:value="${tourCategory.id}">
+                    </label>
+                </div>
+            </th:block>
+        </div>
+        <input type="submit" value="Delete" class="btn btn-danger">
+    </form>
+</main>
+</body>
+</html>

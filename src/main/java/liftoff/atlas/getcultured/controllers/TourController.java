@@ -5,6 +5,7 @@ import liftoff.atlas.getcultured.models.Tag;
 import liftoff.atlas.getcultured.models.Tour;
 import liftoff.atlas.getcultured.models.data.CityRepository;
 import liftoff.atlas.getcultured.models.data.TagRepository;
+import liftoff.atlas.getcultured.models.data.TourCategoryRepository;
 import liftoff.atlas.getcultured.models.data.TourRepository;
 import liftoff.atlas.getcultured.models.dto.TourTagDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class TourController {
     private CityRepository cityRepository;
 
     @Autowired
+    private TourCategoryRepository tourCategoryRepository;
+
+    @Autowired
     private TagRepository tagRepository;
 
     @GetMapping("")
@@ -38,8 +42,10 @@ public class TourController {
     // Corresponds to http://localhost:8080/tours/add
     @GetMapping("/add")
     public String displayAddTourForm(Model model){
-        model.addAttribute("city", cityRepository.findAll());
         model.addAttribute("tour", new Tour());
+        model.addAttribute("city", cityRepository.findAll());
+        model.addAttribute("tourCategory", tourCategoryRepository.findAll());
+        model.addAttribute("tags", tagRepository.findAll());
         return "tours/add";
     }
 

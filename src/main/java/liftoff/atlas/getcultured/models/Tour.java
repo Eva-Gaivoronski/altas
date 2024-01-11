@@ -31,6 +31,10 @@ public class Tour extends AbstractEntity {
     @JoinColumn(name = "city_id")
     private City city;
 
+    @ManyToOne
+    @NotNull(message="Category is required")
+    private TourCategory tourCategory;
+
     @ManyToMany
     private final List<Tag> tags = new ArrayList<>();
 
@@ -41,7 +45,7 @@ public class Tour extends AbstractEntity {
     }
 
     public Tour(String summaryDescription, Double estimatedLength,
-                Double estimatedTravelTime, Double userRating, User author, MapMarker location, City city) {
+                Double estimatedTravelTime, Double userRating, User author, MapMarker location, City city, TourCategory tourCategory) {
         super();
         this.summaryDescription = summaryDescription;
         this.estimatedLength = estimatedLength;
@@ -50,6 +54,7 @@ public class Tour extends AbstractEntity {
         this.author = author;
         this.location = location;
         this.city = city;
+        this.tourCategory = tourCategory;
     }
 
     public String getTourName() {
@@ -114,6 +119,14 @@ public class Tour extends AbstractEntity {
 
     public void setCity(City city) {
         this.city = city;
+    }
+
+    public TourCategory getTourCategory() {
+        return tourCategory;
+    }
+
+    public void setTourCategory(TourCategory tourCategory) {
+        this.tourCategory = tourCategory;
     }
 
     public List<Stop> getStops() {

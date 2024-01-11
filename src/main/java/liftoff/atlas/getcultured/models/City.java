@@ -11,7 +11,7 @@ public class City extends AbstractEntity {
 
     private String state;
 
-    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "city")
     private List<Tour> tours;
 
     public City() {
