@@ -1,9 +1,16 @@
 package liftoff.atlas.getcultured.controllers;
 
+import liftoff.atlas.getcultured.util.GeocodingResponseParser;
+import liftoff.atlas.getcultured.util.ReadJSON;
+import net.minidev.json.parser.ParseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -12,9 +19,8 @@ public class GoogleController {
 
 
 //    getCityGeocode returns several instances of latitude & longitude necessary to conduct
-    @PostMapping("city")
-    private static void getCityGeocode(String searchTerm)
-    {
+    @PostMapping("/city")
+    private static String[] getCityGeocode(String searchTerm) throws FileNotFoundException, ParseException {
 
         final String apiKey = "&key=\n"
                 + "ENV_APIKEY_HERE";
@@ -23,27 +29,22 @@ public class GoogleController {
         final String uri = uriStart + searchTerm + uriEnd + apiKey;
 
 
+        List<Map<String, Object>> resultList = GeocodingResponseParser.parseResults(ReadJSON.readLocalJSONFile(uri).toString());
 
-        RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject(uri, String.class);
+        String[] response = new String[0];
 
-        System.out.println(result);
+        for (Map<String, Object> result : resultList) {
+
+            // Accessing latitude and longitude
+            Double latitude = (Double) result.get("Latitude");
+            Double longitude = (Double) result.get("Longitude");
+
+            if (latitude != null && longitude != null) {
+                response = new String[]{String.valueOf(latitude), String.valueOf(longitude)};
+
+            }
+        }
+        return response;
     }
-
-//    getCityStops takes in the searchType (Restaurant, Bar, Venue, Museum, etc.) and the longitude and latitude (getCityGeocode()) with a hard-coded radius that produces a JSON of places.
-    @PostMapping("stops")
-    private static void getCityStops(@RequestParam String searchType, @RequestParam(required = true) String lnglat) {
-
-        final String apiKey = "&key=" + "ENV_APIKEY_HERE";
-        final String uriStart = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
-        final String uriEnd = "&" + lnglat;
-        final String uri = uriStart + searchType + uriEnd + "&radius=250" + apiKey;
-
-        RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject(uri, String.class);
-
-        System.out.println(result);
-    }
-
 
 }
