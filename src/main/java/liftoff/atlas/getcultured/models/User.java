@@ -39,10 +39,6 @@ public class User {
     @JoinColumn(name = "user_group_id")
     private UserGroup userGroup;
 
-    // TODO: Move toursAuthors & tourFeedback to UserProfile
-
-
-
     public User() {}
 
     public User(String username, String emailAddress, String password) {
@@ -63,7 +59,31 @@ public class User {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getEmailAddress() {
         return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public UserProfileDetails getUserProfileDetails() {
+        return userProfileDetails;
+    }
+
+    public void setUserProfileDetails(UserProfileDetails userProfileDetails) {
+        this.userProfileDetails = userProfileDetails;
+    }
+
+    public UserGroup getUserGroup() {
+        return userGroup;
+    }
+
+    public void setUserGroup(UserGroup userGroup) {
+        this.userGroup = userGroup;
     }
 }

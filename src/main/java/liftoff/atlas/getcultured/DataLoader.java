@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DataLoader {
 
+    private boolean sendVerificationEmailEnabled = false; // Toggle to have the email verification email below send on run
+
     @Bean
     CommandLineRunner loadData(
             UserRepository userRepository, //
@@ -26,10 +28,13 @@ public class DataLoader {
             SecureToken user1EmailVerificationToken = new SecureToken(user1,"Email verification token");
             secureTokenRepository.save(user1EmailVerificationToken);
 
-            emailService.sendVerificationEmail(
-                    user1.getEmailAddress(),
-                    "GetCultured - Email sent from SpringBoot project",
-                    "This is a test email being sent from my local app. The token value is: " + user1EmailVerificationToken.getTokenValue());
+            if(sendVerificationEmailEnabled) {
+                emailService.sendVerificationEmail(
+                        user1.getEmailAddress(),
+                        "GetCultured - Email sent from SpringBoot project",
+                        "This is a test email being sent from my local app. The token value is: " + user1EmailVerificationToken.getTokenValue());
+            }
+
         };
     }
 }
