@@ -1,4 +1,5 @@
 package liftoff.atlas.getcultured.models;
 
-public class UserProfileInfo {
+public class UserProfileDetails {
+
 }

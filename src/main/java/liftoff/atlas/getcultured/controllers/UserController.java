@@ -3,6 +3,8 @@ package liftoff.atlas.getcultured.controllers;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import liftoff.atlas.getcultured.models.EmailService;
+import liftoff.atlas.getcultured.models.SecureToken;
+import liftoff.atlas.getcultured.models.data.SecureTokenRepository;
 import liftoff.atlas.getcultured.models.data.UserRepository;
 import liftoff.atlas.getcultured.models.User;
 import liftoff.atlas.getcultured.models.dto.LoginFormDTO;
@@ -21,7 +23,11 @@ public class UserController {
     UserRepository userRepository;
 
     @Autowired
+    SecureTokenRepository secureTokenRepository;
+
+    @Autowired
     EmailService emailService;
+
 
     // TODO: Add config to handle all requests with "/" in path - https://stackoverflow.com/a/2515533
     @GetMapping(path= {"","/"}) // Handles requests for "user" and "user/",
@@ -124,10 +130,15 @@ public class UserController {
     @GetMapping("sendEmail")
     @ResponseBody
     public String sendEmail() {
+        User theUser = userRepository.findByEmailAddress("alex@merchant.com");
+        SecureToken emailVerificationToken = new SecureToken(theUser,"Email verification token");
+
+        secureTokenRepository.save(emailVerificationToken);
+
         emailService.sendVerificationEmail(
                 "alexmerch@gmail.com",
                 "Test send from SpringBoot",
-                "This is a test email being sent from my local app."
+                "This is a test email being sent from my local app. The token value is: " + emailVerificationToken.getTokenValue()
         );
 
         return "Email sent!";
