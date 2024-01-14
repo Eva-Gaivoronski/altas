@@ -10,7 +10,7 @@ public class UserReview extends AbstractEntity {
 
     @ManyToOne
     @NotNull(message = "User cannot be null")
-    private User user;
+    private UserProfileDetails userProfile;
 
     @ManyToOne
     @NotNull(message = "Tour cannot be null")
@@ -21,20 +21,20 @@ public class UserReview extends AbstractEntity {
 
     private int rating;
 
-    public UserReview(User user, Tour tour, String reviewText, int rating) {
+    public UserReview(UserProfileDetails userProfile, Tour tour, String reviewText, int rating) {
         super();
-        this.user = user;
+        this.userProfile = userProfile;
         this.tour = tour;
         this.reviewText = reviewText;
         this.rating = rating;
     }
 
-    public User getUser() {
-        return user;
+    public UserProfileDetails getUserProfileDetails() {
+        return userProfile;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserProfile(UserProfileDetails userProfile) {
+        this.userProfile = userProfile;
     }
 
     public Tour getTour() {

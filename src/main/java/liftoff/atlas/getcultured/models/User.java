@@ -31,17 +31,17 @@ public class User {
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_profile_detail_id", referencedColumnName = "profile_id")
+    private UserProfileDetails userProfileDetails;
+
     @ManyToOne
     @JoinColumn(name = "user_group_id")
     private UserGroup userGroup;
 
     // TODO: Move toursAuthors & tourFeedback to UserProfile
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    private List<Tour> toursAuthored;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserReview> tourFeedback;
 
     public User() {}
 
@@ -65,13 +65,5 @@ public class User {
 
     public String getEmailAddress() {
         return emailAddress;
-    }
-
-    public List<Tour> getToursAuthored() {
-        return toursAuthored;
-    }
-
-    public void setToursAuthored(List<Tour> toursAuthored) {
-        this.toursAuthored = toursAuthored;
     }
 }

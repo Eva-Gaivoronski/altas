@@ -16,8 +16,8 @@ public class Tour extends AbstractEntity {
     private Double userRating;
 
     @ManyToOne
-    @JoinColumn(name = "author_id")
-    private User author;
+    @JoinColumn(name = "author_profile_id")
+    private UserProfileDetails authorProfile;
 
     @Embedded
     private MapMarker location;
@@ -33,13 +33,13 @@ public class Tour extends AbstractEntity {
     }
 
     public Tour(String summaryDescription, Double estimatedLength,
-                Double estimatedTravelTime, Double userRating, User author, MapMarker location, City city) {
+                Double estimatedTravelTime, Double userRating, UserProfileDetails authorProfile, MapMarker location, City city) {
         super();
         this.summaryDescription = summaryDescription;
         this.estimatedLength = estimatedLength;
         this.estimatedTravelTime = estimatedTravelTime;
         this.userRating = userRating;
-        this.author = author;
+        this.authorProfile = authorProfile;
         this.location = location;
         this.city = city;
     }
@@ -84,12 +84,12 @@ public class Tour extends AbstractEntity {
         this.userRating = userRating;
     }
 
-    public User getAuthor() {
-        return author;
+    public UserProfileDetails getAuthor() {
+        return authorProfile;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public void setAuthor(UserProfileDetails authorProfile) {
+        this.authorProfile = authorProfile;
     }
 
     public MapMarker getLocation() {
