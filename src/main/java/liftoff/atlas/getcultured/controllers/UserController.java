@@ -130,13 +130,14 @@ public class UserController {
     @GetMapping("sendEmail")
     @ResponseBody
     public String sendEmail() {
-        User theUser = userRepository.findByEmailAddress("alex@merchant.com");
+        String theUserEmailAddress = System.getenv("TEST_USER_EMAIL"); //Retrieves test user's email from the env variable
+        User theUser = userRepository.findByEmailAddress(theUserEmailAddress);
         SecureToken emailVerificationToken = new SecureToken(theUser,"Email verification token");
 
         secureTokenRepository.save(emailVerificationToken);
 
         emailService.sendVerificationEmail(
-                "alexmerch@gmail.com",
+                theUserEmailAddress,
                 "Test send from SpringBoot",
                 "This is a test email being sent from my local app. The token value is: " + emailVerificationToken.getTokenValue()
         );
