@@ -12,9 +12,11 @@ public class UserGroup extends AbstractEntity {
     @OneToMany(mappedBy = "userGroup", cascade = CascadeType.ALL)
     private List<User> users;
 
+    public UserGroup() {}
 
-    public UserGroup() {
+    public UserGroup(String groupName) {
         super();
+        this.setName(groupName);
     }
 
     public List<User> getUsers() {
