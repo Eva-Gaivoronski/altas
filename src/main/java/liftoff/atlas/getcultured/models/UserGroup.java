@@ -12,8 +12,6 @@ public class UserGroup extends AbstractEntity {
     @OneToMany(mappedBy = "userGroup", cascade = CascadeType.ALL)
     private List<User> users;
 
-    @ManyToMany
-    private Set<AdminPermission> adminPermissions;
 
     public UserGroup() {
         super();
@@ -27,11 +25,4 @@ public class UserGroup extends AbstractEntity {
         this.users = users;
     }
 
-    public Set<AdminPermission> getAdminPermissions() {
-        return adminPermissions;
-    }
-
-    public void setAdminPermissions(Set<AdminPermission> adminPermissions) {
-        this.adminPermissions = adminPermissions;
-    }
 }
