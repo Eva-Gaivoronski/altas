@@ -2,6 +2,7 @@ package liftoff.atlas.getcultured.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import liftoff.atlas.getcultured.models.EmailService;
 import liftoff.atlas.getcultured.models.data.UserRepository;
 import liftoff.atlas.getcultured.models.User;
 import liftoff.atlas.getcultured.models.dto.LoginFormDTO;
@@ -10,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("user")
@@ -21,6 +19,9 @@ public class UserController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    EmailService emailService;
 
     // TODO: Add config to handle all requests with "/" in path - https://stackoverflow.com/a/2515533
     @GetMapping(path= {"","/"}) // Handles requests for "user" and "user/",
@@ -118,5 +119,17 @@ public class UserController {
     @GetMapping("profile/view/{userId}")
     public String displayPublicUserProfile(Model model)  {
         return "user/public-profile";
+    }
+
+    @GetMapping("sendEmail")
+    @ResponseBody
+    public String sendEmail() {
+        emailService.sendVerificationEmail(
+                "alexmerch@gmail.com",
+                "Test send from SpringBoot",
+                "This is a test email being sent from my local app."
+        );
+
+        return "Email sent!";
     }
 }

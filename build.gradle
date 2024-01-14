@@ -22,7 +22,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'mysql:mysql-connector-java:8.0.32'
-	implementation 'org.springframework.security:spring-security-crypto:5.5.1'
+	implementation 'org.springframework.security:spring-security-crypto:5.5.1' // Used for bcrypt
+	implementation 'org.springframework.boot:spring-boot-starter-mail' // Used to send email
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //	testImplementation 'org.springframework.security:spring-security-test'
