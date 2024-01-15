@@ -34,10 +34,17 @@ public class DataLoader {
 
             // TODO: Add logic for these to be skipped if they already exist in the DB. This is important for when we set spring.jpa.hibernate.ddl-auto back to 'update'
             UserGroup adminUG = new UserGroup("admin");
+            UserGroup verifiedUG = new UserGroup("verified");
+            UserGroup registeredUG = new UserGroup("registered");
+
             userGroups.add(adminUG);
+            userGroups.add(verifiedUG);
+            userGroups.add(registeredUG);
+
+//            // UserGroups cannot be referenced below directly this way, and Lazy fetch causes errors thrown when attempting to retrieve from DB.
 //            userGroups.add(new UserGroup("admin"));
-            userGroups.add(new UserGroup("verified"));
-            userGroups.add(new UserGroup("registered"));
+//            userGroups.add(new UserGroup("verified"));
+//            userGroups.add(new UserGroup("registered"));
 
             userGroupRepository.saveAll(userGroups);
             /* End application data initialization for the User System */
@@ -50,6 +57,8 @@ public class DataLoader {
                     "testing123");
 
             user1.addUserGroupToUser(adminUG);
+            user1.addUserGroupToUser(registeredUG);
+            user1.addUserGroupToUser(verifiedUG);
             userRepository.save(user1);
 
 //            user1.removeUserGroupFromUser(adminUG);

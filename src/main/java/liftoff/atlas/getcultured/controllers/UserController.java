@@ -1,6 +1,7 @@
 package liftoff.atlas.getcultured.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import liftoff.atlas.getcultured.models.EmailService;
 import liftoff.atlas.getcultured.models.SecureToken;
@@ -17,6 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+
 @Controller
 @RequestMapping("user")
 public class UserController {
@@ -29,6 +32,9 @@ public class UserController {
 
     @Autowired
     UserGroupRepository userGroupRepository;
+
+    @Autowired
+    AuthenticationController authenticationController;
 
     @Autowired
     EmailService emailService;
@@ -58,7 +64,6 @@ public class UserController {
 
         User existingUsername = userRepository.findByUsername(signUpFormDTO.getUsername());
         User existingEmailAddress = userRepository.findByEmailAddress(signUpFormDTO.getEmailAddress());
-//        UserGroup
 
         if (existingEmailAddress != null) {
             errors.rejectValue("emailAddress", "emailAddress.alreadyregistered", "An account using that email address has already been registered");
@@ -84,7 +89,7 @@ public class UserController {
         AuthenticationController.setUserInSession(request.getSession(), newUser);
 
         // TODO: Take to personal profile page to add profile data
-        return "redirect:";
+        return "redirect:/user/profile/view";
     }
 
     @GetMapping("login")
@@ -125,8 +130,24 @@ public class UserController {
         return "redirect:/user/login";
     }
 
-    @GetMapping("profile")
-    public String displayPersonalUserProfile(Model model)  {
+    @GetMapping("profile/view")
+    public String displayPersonalUserProfile(Model model, HttpServletRequest request)  {
+        HttpSession session = request.getSession();
+        User currentUser = authenticationController.getUserFromSession(session);
+
+        Set<UserGroup> currentUserAllGroups = currentUser.getUserGroups();
+        String allGroupMemberships = currentUserAllGroups.toString();
+
+        // If the 'verified' user group is not found, pass boolean flag to model attributes
+        if(!allGroupMemberships.contains("verified")) {
+            boolean userNeedsToVerifyEmail = true;
+            model.addAttribute("userNeedsToVerifyEmail", userNeedsToVerifyEmail);
+        }
+
+        model.addAttribute("userId", currentUser.getUserId());
+        model.addAttribute("username", currentUser.getUsername());
+        model.addAttribute("groupMemberships", allGroupMemberships);
+
         return "user/user-profile";
     }
 
