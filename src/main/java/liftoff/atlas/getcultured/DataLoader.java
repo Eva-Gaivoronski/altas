@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Configuration
@@ -32,7 +33,9 @@ public class DataLoader {
             List<UserGroup> userGroups = new ArrayList<>();
 
             // TODO: Add logic for these to be skipped if they already exist in the DB. This is important for when we set spring.jpa.hibernate.ddl-auto back to 'update'
-            userGroups.add(new UserGroup("admin"));
+            UserGroup adminUG = new UserGroup("admin");
+            userGroups.add(adminUG);
+//            userGroups.add(new UserGroup("admin"));
             userGroups.add(new UserGroup("verified"));
             userGroups.add(new UserGroup("registered"));
 
@@ -40,9 +43,18 @@ public class DataLoader {
             /* End application data initialization for the User System */
 
 
-            String user1EmailAddress = System.getenv("TEST_USER_EMAIL"); //retrieve Alex's email from the env variable
-            User user1 = new User("alex",user1EmailAddress,"testing123");
+//            String user1EmailAddress = System.getenv("TEST_USER_EMAIL");
+            User user1 = new User(
+                    "alex",
+                    System.getenv("TEST_USER_EMAIL"), //retrieve Alex's email from the env variable
+                    "testing123");
+
+            user1.addUserGroupToUser(adminUG);
             userRepository.save(user1);
+
+//            user1.removeUserGroupFromUser(adminUG);
+//            userRepository.save(user1);
+
 
             SecureToken user1EmailVerificationToken = new SecureToken(user1,"Email verification token");
             secureTokenRepository.save(user1EmailVerificationToken);

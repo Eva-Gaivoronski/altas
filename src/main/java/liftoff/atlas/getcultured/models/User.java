@@ -38,22 +38,41 @@ public class User {
 
     @ManyToMany
     @JoinTable(
-            name = "user_user_group",
+            name = "user_usergroup",
             joinColumns = @JoinColumn(name="user_id"),
-            inverseJoinColumns = @JoinColumn(name="user_group_id")
+            inverseJoinColumns = @JoinColumn(name="usergroup_id")
     )
     private Set<UserGroup> userGroups = new HashSet<>();
 
     public User() {}
 
+    // User constructor w/ no UserGroup param
     public User(String username, String emailAddress, String password) {
         this.username = username;
         this.emailAddress = emailAddress;
         this.passwordHash = encoder.encode(password);
     }
 
+    // User constructor that takes a userGroup as an argument
+    public User(String username, String emailAddress, String password, UserGroup userGroup) {
+        this.username = username;
+        this.emailAddress = emailAddress;
+        this.passwordHash = encoder.encode(password);
+        this.addUserGroupToUser(userGroup);
+    }
+
     public boolean isMatchingPassword(String password) {
         return encoder.matches(password, passwordHash);
+    }
+
+    public void addUserGroupToUser(UserGroup userGroup) {
+        this.getUserGroups().add(userGroup);
+        userGroup.getUsers().add(this);
+    }
+
+    public void removeUserGroupFromUser(UserGroup userGroup) {
+        this.getUserGroups().remove(userGroup);
+        userGroup.getUsers().remove(this);
     }
 
     public int getUserId() {
