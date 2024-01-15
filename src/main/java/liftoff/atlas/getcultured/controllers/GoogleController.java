@@ -3,10 +3,11 @@ package liftoff.atlas.getcultured.controllers;
 import liftoff.atlas.getcultured.util.GeocodingResponseParser;
 import liftoff.atlas.getcultured.util.ReadJSON;
 import net.minidev.json.parser.ParseException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -19,19 +20,19 @@ public class GoogleController {
 
 
 //    getCityGeocode returns several instances of latitude & longitude necessary to conduct
-    @PostMapping("/city")
-    private static String[] getCityGeocode(String searchTerm) throws FileNotFoundException, ParseException {
+    @PostMapping("/{userId}/city")
+    private static void getCityGeocode(String searchTerm, Model model) throws FileNotFoundException, ParseException {
 
-        final String apiKey = "&key=\n"
-                + "ENV_APIKEY_HERE";
+        final String apiKey = "&key="
+                + System.getenv("GOOGLE_API_KEY");
         final String uriStart = "https://maps.googleapis.com/maps/api/geocode/json?address=";
         final String uriEnd = "&region=us";
         final String uri = uriStart + searchTerm + uriEnd + apiKey;
 
 
-        List<Map<String, Object>> resultList = GeocodingResponseParser.parseResults(ReadJSON.readLocalJSONFile(uri).toString());
+        List<Map<String, Object>> resultList = GeocodingResponseParser.parseResults(ReadJSON.readLocalJSONFile(uri));
 
-        String[] response = new String[0];
+        String response = "";
 
         for (Map<String, Object> result : resultList) {
 
@@ -40,11 +41,24 @@ public class GoogleController {
             Double longitude = (Double) result.get("Longitude");
 
             if (latitude != null && longitude != null) {
-                response = new String[]{String.valueOf(latitude), String.valueOf(longitude)};
+                response = latitude + String.valueOf(longitude);
 
             }
         }
-        return response;
+        model.addAttribute("location", response);
+
+    }
+
+    @PostMapping("{userId}/{tourId}/stop")
+    @Value(value = "39.0997265,-94.5785667")
+    private static void getStopDetails (@RequestParam String location, String category, String searchTerm ) {
+
+        final String apiKey = "&key="
+                + System.getenv("GOOGLE_API_KEY");
+        final String uriStart = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
+        final String radius = "&=5000";
+        final String uri = uriStart + searchTerm + "&=" + location + "&=" + category + radius + apiKey;
+
     }
 
 }
