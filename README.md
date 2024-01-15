@@ -18,7 +18,7 @@ Project for LaunchCode's Liftoff Program - Eva Group 1 - Atlas
 
 ### **Base Feature List**
 
-### **- **User Account Creation & Management:** Users can create an account which gives them additional access to areas of the application and abilities depending on their User Group.
+### **User Account Creation & Management:** Users can create an account which gives them additional access to areas of the application and abilities depending on their User Group.
 
 - **Full CRUD Functionality:** Verified users can create and modify Tours they author, leave feedback and rate other users’ authored Tours. Admin users can create and modify any Tour in the application; as well as create and modify User data and Filter Tag data.
 
@@ -28,7 +28,7 @@ Project for LaunchCode's Liftoff Program - Eva Group 1 - Atlas
 
 ### **Full Feature List:**
 
-### **- **User System Features**
+### **User System Features**
 
 - Public users can sign up to become Registered users
 
@@ -80,13 +80,13 @@ Project for LaunchCode's Liftoff Program - Eva Group 1 - Atlas
 
 ### **Projected Tech Stack**
 
-### **- Java and Spring for back end
+- Java and Spring for back end
 
-- MySQL for Database 
+- MySQL for Database
 
 - Google Maps API for mapping functionality
 
-- React for front end (Stretch goal)**
+- React for front end (Stretch goal)
 
 ### **Group Members and Work Division**
 
@@ -116,54 +116,54 @@ Project for LaunchCode's Liftoff Program - Eva Group 1 - Atlas
 
     - List Tours a User has authored on their public profile
 
-    * [Madeline](https://github.com/MadGalactic)
+* [Madeline](https://github.com/MadGalactic)
 
-    **(Full CRUD Requirement)** 
+  **(Full CRUD Requirement)**
 
-    - Admin users can create/modify/group filtering tags and tag groups 
+  - Admin users can create/modify/group filtering tags and tag groups 
 
-    - Implementation of Tag Filter system in search operations application giving users ability to initiate a search for a matching location tag or view all tours
+  - Implementation of Tag Filter system in search operations application giving users ability to initiate a search for a matching location tag or view all tours
 
-      - Ability for users to filter/sort Tours view by categories (Popular, Editor Choices, For Foodies, Historic, Low-key, High Activity, Family Friendly)
+    - Ability for users to filter/sort Tours view by categories (Popular, Editor Choices, For Foodies, Historic, Low-key, High Activity, Family Friendly)
 
-      - Ability for verified users to leave comments/feedback on Tours
+    - Ability for verified users to leave comments/feedback on Tours
 
-      - Tours can be tagged with pre-populated categories used for filtering
+    - Tours can be tagged with pre-populated categories used for filtering
 
-      - Admin users can create and modify Filter Tags to be applied to Stops
+    - Admin users can create and modify Filter Tags to be applied to Stops
 
-      - Users initiate a search for Tours by specifying a base location (city)
+    - Users initiate a search for Tours by specifying a base location (city)
 
-      - Admin users can create and modify Filter Tags to be applied to Stops
+    - Admin users can create and modify Filter Tags to be applied to Stops
 
-      - Tours can be tagged with pre-populated labels used for filtering
+    - Tours can be tagged with pre-populated labels used for filtering
 
-      - Users can use filters to narrow search results for Tours in the application
+    - Users can use filters to narrow search results for Tours in the application
 
-  * [Landon](https://github.com/lhedrick05)
+* [Landon](https://github.com/lhedrick05)
 
-        **(SQL Database Requirement)**
+  **(SQL Database Requirement)**
   
-      - Primary deployment of the SQL database 
+    - Primary deployment of the SQL database 
 
-      - Tour data persistence (overall, outside of Stops)
+    - Tour data persistence (overall, outside of Stops)
 
-      - Track and store user progress of tours/completion of stops.
+    - Track and store user progress of tours/completion of stops.
 
-      - Adding tags to filter a specific type of stop
+    - Adding tags to filter a specific type of stop
 
-      - Creation and management of a tour
+    - Creation and management of a tour
 
-      - User feedback provided about a tour
+    - User feedback provided about a tour
 
-      - Users can bookmark a particular tour
+    - Users can bookmark a particular tour
 
-  * [Devon](https://github.com/Cresence)
+* [Devon](https://github.com/Cresence)
 
-    **(External API Requirement)**
+  **(External API Requirement)**
   
-    - Bring in interactive maps with locations from Google API based on user submitted locations. 
+  - Bring in interactive maps with locations from Google API based on user submitted locations. 
 
-    - Validate location data submitted by user so it can be properly used with the mapping API
+  - Validate location data submitted by user so it can be properly used with the mapping API
 
-    - Committing Stop data into the database \*pulled from external API (Google Places API) filtered, sorted and saved into internal database\*
+  - Committing Stop data into the database \*pulled from external API (Google Places API) filtered, sorted and saved into internal database\*
