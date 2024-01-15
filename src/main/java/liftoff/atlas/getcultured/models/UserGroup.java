@@ -3,14 +3,15 @@ package liftoff.atlas.getcultured.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
 public class UserGroup extends AbstractEntity {
 
-    @OneToMany(mappedBy = "userGroup", cascade = CascadeType.ALL)
-    private List<User> users;
+    @ManyToMany(mappedBy = "userGroups", cascade = CascadeType.ALL)
+    private Set<User> users = new HashSet<>();
 
     public UserGroup() {}
 
@@ -19,11 +20,11 @@ public class UserGroup extends AbstractEntity {
         this.setName(groupName);
     }
 
-    public List<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
 

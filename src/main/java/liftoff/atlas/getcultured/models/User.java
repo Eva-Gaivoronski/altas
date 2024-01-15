@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -35,9 +36,13 @@ public class User {
     @JoinColumn(name = "user_profile_detail_id", referencedColumnName = "profile_id")
     private UserProfileDetails userProfileDetails;
 
-    @ManyToOne
-    @JoinColumn(name = "user_group_id")
-    private UserGroup userGroup;
+    @ManyToMany
+    @JoinTable(
+            name = "user_user_group",
+            joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name="user_group_id")
+    )
+    private Set<UserGroup> userGroups = new HashSet<>();
 
     public User() {}
 
@@ -79,11 +84,11 @@ public class User {
         this.userProfileDetails = userProfileDetails;
     }
 
-    public UserGroup getUserGroup() {
-        return userGroup;
+    public Set<UserGroup> getUserGroups() {
+        return userGroups;
     }
 
-    public void setUserGroup(UserGroup userGroup) {
-        this.userGroup = userGroup;
+    public void setUserGroups(Set<UserGroup> userGroups) {
+        this.userGroups = userGroups;
     }
 }
