@@ -10,8 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class GoogleMethodTests extends AbstractTest {
@@ -20,11 +19,60 @@ public class GoogleMethodTests extends AbstractTest {
     public void cityPlacesIsSame() throws IOException, ParseException {
         List<Map<String, Object>> resultList = PlacesResponseParser.parseResults(ReadJSON.readLocalJSONFile("src/test/java/liftoff/atlas/getcultured/PlacesTest.JSON"));
 
+        System.out.println("-----");
+        Map <Integer, Object> formattedList = new HashMap<>();
+        int k = 0;
+
         for (Map<String, Object> result : resultList) {
             String name = (String) result.get("Name");
+            String address = (String) result.get("Address");
+            Double rating = (Double) result.get("Rating");
+            Integer priceLevel = (Integer) result.get("Price Level");
+            Double latitude = (Double) result.get("Latitude");
+            Double longitude = (Double) result.get("Longitude");
 
-            System.out.println(name);
+            String[] location = new String[0];
+
+            if (latitude != null && longitude != null) {
+                location = new String[]{String.valueOf(latitude), String.valueOf(longitude)};
+
+            }
+
+            Map<Integer, String> map = new HashMap<>();
+            List types = (List) result.get("Types");
+
+            for (int i = 0; i < types.size(); i++){
+                map.put(i, (String) types.get(i));
+            }
+
+//            System.out.println("Name: " + name);
+//            System.out.println("Address: " + address);
+//            System.out.println("Types: " + map.values());
+//            System.out.println("Rating: " + rating);
+//            System.out.println("Price Level: " + priceLevel);
+//            System.out.println("Location: " + Arrays.toString(location));
+//            System.out.println("-----");
+
+            List<Object> formattedResult = new ArrayList<>();
+            formattedResult.add(name);
+            formattedResult.add(address);
+            formattedResult.add(map.values());
+            formattedResult.add(rating);
+            formattedResult.add(priceLevel);
+            formattedResult.add(location);
+//            For readability:
+//            formattedResult.add(Arrays.toString(location));
+
+            formattedList.put(k, formattedResult);
+            k++;
+
         }
+        System.out.println(formattedList.keySet());
+        System.out.println(formattedList.values());
+        Object firstPick = formattedList.get(0);
+        Object lastPick = formattedList.get(formattedList.size() - 1);
+        System.out.println(firstPick);
+        System.out.println(lastPick);
     }
 
     @Test
