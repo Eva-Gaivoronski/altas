@@ -4,7 +4,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import liftoff.atlas.getcultured.models.EmailService;
 import liftoff.atlas.getcultured.models.SecureToken;
+import liftoff.atlas.getcultured.models.UserGroup;
 import liftoff.atlas.getcultured.models.data.SecureTokenRepository;
+import liftoff.atlas.getcultured.models.data.UserGroupRepository;
 import liftoff.atlas.getcultured.models.data.UserRepository;
 import liftoff.atlas.getcultured.models.User;
 import liftoff.atlas.getcultured.models.dto.LoginFormDTO;
@@ -24,6 +26,9 @@ public class UserController {
 
     @Autowired
     SecureTokenRepository secureTokenRepository;
+
+    @Autowired
+    UserGroupRepository userGroupRepository;
 
     @Autowired
     EmailService emailService;
@@ -53,6 +58,7 @@ public class UserController {
 
         User existingUsername = userRepository.findByUsername(signUpFormDTO.getUsername());
         User existingEmailAddress = userRepository.findByEmailAddress(signUpFormDTO.getEmailAddress());
+//        UserGroup
 
         if (existingEmailAddress != null) {
             errors.rejectValue("emailAddress", "emailAddress.alreadyregistered", "An account using that email address has already been registered");
@@ -71,7 +77,9 @@ public class UserController {
             return "user/create-user";
         }
 
-        User newUser = new User(signUpFormDTO.getUsername(), signUpFormDTO.getEmailAddress(), signUpFormDTO.getPassword());
+        UserGroup userGroup = userGroupRepository.findByName("registered");
+
+        User newUser = new User(signUpFormDTO.getUsername(), signUpFormDTO.getEmailAddress(), signUpFormDTO.getPassword(), userGroup);
         userRepository.save(newUser);
         AuthenticationController.setUserInSession(request.getSession(), newUser);
 
