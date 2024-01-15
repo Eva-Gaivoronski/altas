@@ -1,11 +1,11 @@
 package liftoff.atlas.getcultured;
 
 import liftoff.atlas.getcultured.util.GeocodingResponseParser;
+import liftoff.atlas.getcultured.util.PlacesResponseParser;
 import liftoff.atlas.getcultured.util.ReadJSON;
 import net.minidev.json.parser.ParseException;
 import org.junit.jupiter.api.Test;
 
-import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -17,7 +17,18 @@ import java.util.Map;
 public class GoogleMethodTests extends AbstractTest {
 
     @Test
-    public void cityGeocoderIsSame() throws IOException, ParseException, InterruptedException, ParseException {
+    public void cityPlacesIsSame() throws IOException, ParseException {
+        List<Map<String, Object>> resultList = PlacesResponseParser.parseResults(ReadJSON.readLocalJSONFile("src/test/java/liftoff/atlas/getcultured/PlacesTest.JSON"));
+
+        for (Map<String, Object> result : resultList) {
+            String name = (String) result.get("Name");
+
+            System.out.println(name);
+        }
+    }
+
+    @Test
+    public void cityGeocoderIsSame() throws IOException, ParseException {
         List<Map<String, Object>> resultList = GeocodingResponseParser.parseResults(ReadJSON.readLocalJSONFile("src/test/java/liftoff/atlas/getcultured/PostMapTest.JSON"));
 
         String mockAddress = "Kansas City, MO, USA";

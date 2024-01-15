@@ -13,28 +13,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GeocodingResponseParser {
+
+public class PlacesResponseParser {
 
     public static List<Map<String, Object>> parseResults(String jsonResponse) {
         List<Map<String, Object>> resultList = new ArrayList<>();
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            GeocodingResponse geocodingResponse = objectMapper.readValue(jsonResponse, GeocodingResponse.class);
+            PlacesResponse placesResponse = objectMapper.readValue(jsonResponse, PlacesResponse.class);
 
-            String status = geocodingResponse.getStatus();
+            String status = placesResponse.getStatus();
             if ("OK".equals(status)) {
-                List<GeocodingResult> results = geocodingResponse.getResults();
-                for (GeocodingResult result : results) {
+                List<PlacesResult> results = placesResponse.getResults();
+                for (PlacesResult result : results) {
                     Map<String, Object> resultInfo = new HashMap<>();
-                    resultInfo.put("Formatted Address", result.getFormattedAddress());
 
-                    List<AddressComponent> addressComponents = result.getAddressComponents();
-                    for (AddressComponent addressComponent : addressComponents) {
-                        resultInfo.put("Long Name", addressComponent.getLongName());
-                        resultInfo.put("Short Name", addressComponent.getShortName());
-                        resultInfo.put("Types", addressComponent.getTypes());
-                    }
+                    resultInfo.put("Place ID", result.getPlaceId());
+                    resultInfo.put("Name", result.getName());
+                    resultInfo.put("Address", result.getFormattedAddress());
+                    resultInfo.put("Rating", result.getRating());
+                    resultInfo.put("Price Level", result.getPriceLevel());
+
+                    List<String> types = result.getTypes();
+                    resultInfo.put("Types", types);
 
                     Geometry geometry = result.getGeometry();
                     if (geometry != null) {
@@ -45,18 +47,13 @@ public class GeocodingResponseParser {
                         }
                     }
 
-                    resultInfo.put("Place ID", result.getPlaceId());
-                    resultInfo.put("Types", result.getTypes());
-
                     resultList.add(resultInfo);
-                }
-            } else {
-                System.out.println("Geocoding request failed with status: " + status);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
+                }
+            }
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         return resultList;
     }
 }
