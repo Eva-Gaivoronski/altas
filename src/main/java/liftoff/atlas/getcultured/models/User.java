@@ -51,6 +51,7 @@ public class User {
         this.username = username;
         this.emailAddress = emailAddress;
         this.passwordHash = encoder.encode(password);
+        this.userProfileDetails = new UserProfileDetails();
     }
 
     // User constructor that takes a userGroup as an argument
@@ -58,6 +59,7 @@ public class User {
         this.username = username;
         this.emailAddress = emailAddress;
         this.passwordHash = encoder.encode(password);
+        this.userProfileDetails = new UserProfileDetails();
         this.addUserGroupToUser(userGroup);
     }
 
@@ -73,6 +75,10 @@ public class User {
     public void removeUserGroupFromUser(UserGroup userGroup) {
         this.getUserGroups().remove(userGroup);
         userGroup.getUsers().remove(this);
+    }
+
+    public int getUserProfileDetailsID() {
+        return this.userProfileDetails.getProfileId();
     }
 
     public int getUserId() {

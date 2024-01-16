@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>USERNAME's Profile - Edit Profile</title>
+
+            <link th:replace="~{fragments :: user-styles}" />
+            <link th:replace="~{fragments :: styles}" />
+
+            <script src="/script.js"></script>
+        </head>
+        <body>
+            <nav th:replace="~{fragments :: user-nav}"></nav>
+            <div th:replace="~{fragments :: user-menu}"></div>
+
+            <div>
+                <h1>Edit Profile Information</h1>
+                <h2>Account Information</h2>
+                <p>Username: <span th:text="${username}">Username not available.</span></p>
+                <p>User ID: <span th:text="${userId}">0 - Something is wrong...</span></p>
+                <p>Account Status: <span th:text="${allGroupMemberships}">User Group memberships not found.</span></p>
+                <p th:if="${userNeedsToVerifyEmail}">Your email address is still unverified, please check your inbox for an email containing a link to complete your verification.</p>
+            </div>
+
+            <h2>Manage Your Profile</h2>
+            <div>
+                <form method="post">
+                    <div class="form-group">
+                        <label th:for="firstName">First Name: </label>
+                        <input th:field="${userProfileDetailsEditFormDTO.firstName}" />
+                        <p th:errors="${userProfileDetailsEditFormDTO.firstName}" class="error-class"></p>
+                    </div>
+                    <div class="form-group">
+                        <label th:for="lastName">Last Name: </label>
+                        <input th:field="${userProfileDetailsEditFormDTO.lastName}" />
+                        <p th:errors="${userProfileDetailsEditFormDTO.lastName}" class="error-class"></p>
+                    </div>
+                    <div class="form-group">
+                        <label th:for="location">Location: </label>
+                        <input th:field="${userProfileDetailsEditFormDTO.location}" />
+                        <p th:errors="${userProfileDetailsEditFormDTO.location}" class="error-class"></p>
+                    </div>
+                    <div class="form-group">
+                        <label th:for="aboutMe">About Me: </label>
+                        <textarea th:field="${userProfileDetailsEditFormDTO.aboutMe}" style="resize:none;"></textarea>
+                        <p th:errors="${userProfileDetailsEditFormDTO.aboutMe}" class="error-class"></p>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Update Profile" />
+                    </div>
+                </form>
+            </div>
+
+            <h2>Authored Tours</h2>
+        </body>
+</html>
