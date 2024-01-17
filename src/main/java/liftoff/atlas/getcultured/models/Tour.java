@@ -141,6 +141,7 @@ public class Tour extends AbstractEntity {
         return tags;
     }
 
+
     public void addTag(Tag tag) {
         this.tags.add(tag);
     }

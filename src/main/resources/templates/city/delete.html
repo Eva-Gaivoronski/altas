@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+<header th:replace="~{fragments :: page-header}"></header>
+<div id="admin-bar">
+    <div class="nav">
+        <a class="navlink" href="/city">All Cities</a>
+        <span class="faux-link">Search</span>
+        <a class="navlink" href="/city/add">Add A City</a>
+    </div>
+</div>
+<main>
+    <form method="POST" style="max-width:600px;">
+        <h3>Delete a City</h3>
+        <div class="container">
+            <th:block th:each="city : ${city}">
+                <div class="form-group">
+                    <label>
+                        <span th:text="${city}"></span>
+                        <input type="checkbox" name="cityId" th:value="${city.id}">
+                    </label>
+                </div>
+            </th:block>
+        </div>
+        <input type="submit" value="Delete" class="btn btn-danger">
+    </form>
+</main>
+</body>
+</html>

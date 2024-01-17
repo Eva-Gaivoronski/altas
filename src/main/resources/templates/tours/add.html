@@ -11,7 +11,7 @@
     </div>
 </div>
     <main>
-        <form action='/tours/add' method='POST'>
+        <form method='POST'>
             <h3>Add a Tour to the Collection</h3>
             <div class="container">
                 <div class="row">
@@ -26,36 +26,36 @@
                         <p class="error" th:errors="${tour.summaryDescription}"></p>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="form-item col-2">
-                        <label th:for="length">Est. Length</label>
-                        <input th:field="${tour.estimatedLength}" />
-                    </div>
-                    <div class="form-item col-2">
-                        <label th:for="travelTime">Est. Travel Time</label>
-                        <input th:field="${tour.estimatedTravelTime}" />
-                    </div>
-                </div>
-                <div class="form-item">
-                <label th:for="userRating">Tour Rating</label>
-                <input th:field="${tour.userRating}" />
-            </div>
-                <div class="row">
-                    <div class="form-item col-2">
-                        <label th:for="author">Author</label>
-                        <input th:field="${tour.author}" />
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-item col-3">
-                        <label th:for="location">Location Latitude</label>
-                        <input th:field="${tour.location.latitude}" />
-                    </div>
-                    <div class="form-item col-3">
-                        <label th:for="location">Location Longitude</label>
-                        <input th:field="${tour.location.longitude}" />
-                    </div>
-                </div>
+<!--                <div class="row">-->
+<!--                    <div class="form-item col-2">-->
+<!--                        <label th:for="length">Est. Length</label>-->
+<!--                        <input th:field="${tour.estimatedLength}" />-->
+<!--                    </div>-->
+<!--                    <div class="form-item col-2">-->
+<!--                        <label th:for="travelTime">Est. Travel Time</label>-->
+<!--                        <input th:field="${tour.estimatedTravelTime}" />-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="form-item">-->
+<!--                <label th:for="userRating">Tour Rating</label>-->
+<!--                <input th:field="${tour.userRating}" />-->
+<!--            </div>-->
+<!--                <div class="row">-->
+<!--                    <div class="form-item col-2">-->
+<!--                        <label th:for="author">Author</label>-->
+<!--                        <input th:field="${tour.author}" />-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="row">-->
+<!--                    <div class="form-item col-3">-->
+<!--                        <label th:for="location">Location Latitude</label>-->
+<!--                        <input th:field="${tour.location.latitude}" />-->
+<!--                    </div>-->
+<!--                    <div class="form-item col-3">-->
+<!--                        <label th:for="location">Location Longitude</label>-->
+<!--                        <input th:field="${tour.location.longitude}" />-->
+<!--                    </div>-->
+<!--                </div>-->
                     <div class="form-item col-2">
                         <label th:for="city">City</label>
                         <select name="cityId">
@@ -65,31 +65,28 @@
                         </select>
                         <a th:href="@{'/city/add'}">Add City</a>
                     </div>
-                    <div class="form-item col-2">
-                        <label th:for="tourCategory">Category</label>
-                        <select th:field="${tourCategory}">
-                            <option th:each="tourCategory : ${tourCategory}"
-                                    th:value="tourCategory.id"
-                                    th:text="${tourCategory}"
-                                    ></option>
-                        </select>
-                        <a th:href="@{'/tourCategories/add'}">Add Category</a>
-                    </div>
+                <div class="form-item col-2">
+                    <label th:for="tourCategory">Category</label>
+                    <select name="tourCategoryId">
+                        <option th:each="tourCategory : ${tourCategory}"
+                                th:value="tourCategory.id"
+                                th:text="${tourCategory.name}"
+                        ></option>
+                    </select>
+                    <a th:href="@{'/tourCategories/add'}">Add Category</a>
+                </div>
                 </div>
                     <div class="form-item col-2">
                         <label th:for="tag">Tags</label>
                         <select name="tagId">
-                            <option th:each="tag : ${tags}"
+                            <option th:each="tag : ${tag}"
                                     th:text="${tag.name}"
                                     th:value="${tag.id}"></option>
                         </select>
                         <a th:href="@{'/tags/add'}">Add Tag</a>
                     </div>
                 </div>
-
-
-
-            <button type='submit'>Add Tour</button>
+            <button type="submit">Add Category</button>
         </form>
     </main>
 

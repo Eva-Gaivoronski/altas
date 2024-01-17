@@ -39,6 +39,20 @@ public class CityController {
         }
     }
 
+    @GetMapping("/delete")
+    public String displayDeleteCityForm(Model model) {
+       model.addAttribute("city", cityRepository.findAll());
+       return "city/delete";
+    }
+
+    @PostMapping("/delete")
+    public String processDeleteCityForm(@RequestParam(required = false) int[] cityId) {
+      for (int id: cityId) {
+          cityRepository.deleteById(id);
+      }
+      return "redirect:/city";
+    }
+
     @GetMapping("view/{cityId}")
     public String displayViewCity(Model model, @PathVariable int cityId) {
         Optional optCity = cityRepository.findById(cityId);

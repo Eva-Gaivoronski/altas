@@ -1,8 +1,10 @@
 package liftoff.atlas.getcultured.controllers;
 
 import jakarta.validation.Valid;
+import liftoff.atlas.getcultured.models.City;
 import liftoff.atlas.getcultured.models.Tag;
 import liftoff.atlas.getcultured.models.Tour;
+import liftoff.atlas.getcultured.models.TourCategory;
 import liftoff.atlas.getcultured.models.data.CityRepository;
 import liftoff.atlas.getcultured.models.data.TagRepository;
 import liftoff.atlas.getcultured.models.data.TourCategoryRepository;
@@ -14,11 +16,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 
 @Controller
-@RequestMapping("/tours")
+@RequestMapping("tours")
 public class TourController {
 
     @Autowired
@@ -33,30 +36,45 @@ public class TourController {
     @Autowired
     private TagRepository tagRepository;
 
-    @GetMapping("")
+    @GetMapping()
     public String displayAllTours(Model model) {
         model.addAttribute("tours", tourRepository.findAll());
         return "tours/index";
     }
 
     // Corresponds to http://localhost:8080/tours/add
-    @GetMapping("/add")
-    public String displayAddTourForm(Model model){
+    @GetMapping("add")
+    public String displayAddTourForm (Model model) {
+        List<City> cities = (List<City>) cityRepository.findAll();
+        List<TourCategory> tourCategories = (List<TourCategory>) tourCategoryRepository.findAll();
+        List<Tag> tags = (List<Tag>) tagRepository.findAll();
         model.addAttribute("tour", new Tour());
-        model.addAttribute("city", cityRepository.findAll());
-        model.addAttribute("tourCategory", tourCategoryRepository.findAll());
-        model.addAttribute("tags", tagRepository.findAll());
+        model.addAttribute("city", cities);
+        model.addAttribute("tourCategory", tourCategories);
+        model.addAttribute("tag", tags);
         return "tours/add";
     }
+//    @GetMapping("/add")
+//    public String displayAddTourForm(Model model){
+//        model.addAttribute("title", "Create Tour");
+//        model.addAttribute("tour", new Tour());
+//        model.addAttribute("city", cityRepository.findAll());
+//        model.addAttribute("tourCategory", tourCategoryRepository.findAll());
+//        model.addAttribute("tags", tagRepository.findAll());
+//        return "tours/add";
+//    }
 
-    @PostMapping("/add")
+    @PostMapping("add")
     public String processAddTourForm(@ModelAttribute @Valid Tour tour, Errors errors, Model model){
         if (errors.hasErrors()){
+            model.addAttribute("city", cityRepository.findAll());
+            model.addAttribute("tourCategory", tourCategoryRepository.findAll());
+            model.addAttribute("tag", tagRepository.findAll());
             return "tours/add";
-        } else {
+        }
             tourRepository.save(tour);
             return "redirect:/tours";
-        }
+
     }
 
     // This will allow you to add a tag to a specific tour

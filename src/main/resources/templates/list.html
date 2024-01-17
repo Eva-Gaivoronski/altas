@@ -1,10 +1,46 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org/">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Title</title>
-</head>
+<head th:replace="~{fragments :: head}"></head>
 <body>
+<header th:replace="~{fragments :: page-header}"></header>
+
+<main>
+    <div class="container body-content">
+        <h1 th:text="${#strings.capitalizeWords(title)}"></h1>
+        <h2 class = "centered">View Tours By:</h2>
+    </div>
+
+    <table class="centeredTable">
+        <tr>
+            <th>All</th>
+            <th>City</th>
+            <th>Tour Category</th>
+        </tr>
+
+        <tr>
+            <td>
+                <li>
+                    <a th:href="@{/list/tours(column='ALL', value='View ALL'}">View All</a>
+                </li>
+            </td>
+            <td>
+                <li th:each="city : ${city}">
+<!--                    <a th:href="@{/city/index(column=city, value=${city.name})}" th:text="${city.name}"></a>-->
+                    <a th:href="@{/list/tours(column=city, value=${city.name})}" th:text="${city.name}"></a>
+                </li>
+            </td>
+            <td>
+                <li th:each="tourCategory : ${categories}">
+<!--                    <a th:href="@{/tourCategory/index(column=tourCategory, value=${categories.name}}" th:text="${categories.name}"></a>-->
+                    <a th:href="@{/list/tours(column=tourCategory, value=${categories.id}}" th:text="${categories.name}"></a>
+                </li>
+            </td>
+        </tr>
+
+    </table>
+
+</main>
+
 
 </body>
 </html>
