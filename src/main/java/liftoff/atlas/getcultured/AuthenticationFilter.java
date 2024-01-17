@@ -26,7 +26,6 @@ public class AuthenticationFilter implements HandlerInterceptor {
             "/user/sign-up",
             "/user/login",
             "/user/forgot-password",
-            "/user/sendEmail", // Triggers verification email to send
             "/script.js",
             "/styles.css",
             "/user-styles.css"
