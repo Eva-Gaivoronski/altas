@@ -1,5 +1,7 @@
 package liftoff.atlas.getcultured;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import liftoff.atlas.getcultured.models.GeocodingResponse;
 import liftoff.atlas.getcultured.util.GeocodingResponseParser;
 import liftoff.atlas.getcultured.util.PlacesResponseParser;
 import liftoff.atlas.getcultured.util.ReadJSON;
@@ -15,12 +17,35 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GoogleMethodTests extends AbstractTest {
 
     @Test
+    public void fetchGeocodingResponseDoesNotExists () throws IOException, ParseException {
+        final String apiKey = "&key="
+                + System.getenv("GOOGLE_API_KEY");
+        final String urlStart = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+        final String city = "RomdeauCity";
+        final String url = urlStart + city + apiKey;
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            GeocodingResponse geocodingResponse = objectMapper.readValue(ReadJSON.fetchJSON(url), GeocodingResponse.class);
+
+            String status = geocodingResponse.getStatus();
+            assertEquals("ZERO_RESULTS", status);
+            System.out.println("-----\nTest - fetchGeocodingResponseDoesNotExists");
+            System.out.println("Expected: ZERO_RESULTS" + "\nActual: " + status);
+
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
     public void fetchPlacesJsonTest() throws IOException, ParseException, InterruptedException {
         final String apiKey = "&key="
                 + System.getenv("GOOGLE_API_KEY");
         final String uriStart = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
         final String radius = "&=5000";
-        final String searchTerm = "tattoedmom";
+        final String searchTerm = "tattooedmom";
         final String locale = "39.9533116,-75.1703448";
         final String category = "restaurant";
         final String uri = uriStart + searchTerm + "&=" + locale + "&=" + category + radius + apiKey;
