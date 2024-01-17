@@ -85,6 +85,10 @@ public class SecureToken {
         this.tokenType = tokenType;
     }
 
+    public int getUserId() {
+        return this.user.getUserId();
+    }
+
     public boolean isActive() {
         return isActive;
     }

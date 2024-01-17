@@ -91,9 +91,38 @@ public class UserController {
 
         User newUser = new User(signUpFormDTO.getUsername(), signUpFormDTO.getEmailAddress(), signUpFormDTO.getPassword(), registeredUserGroup); //registeredUserGroup added to all new Users.
         userRepository.save(newUser);
+
+        SecureToken newUserVerificationToken = new SecureToken(newUser,"Email verification token");
+        secureTokenRepository.save(newUserVerificationToken);
+
+        emailService.sendUserVerificationEmailHTML(signUpFormDTO.getEmailAddress(), newUserVerificationToken.getTokenValue());
+
         AuthenticationController.setUserInSession(request.getSession(), newUser);
 
         return "redirect:/user/profile/edit";
+    }
+
+    @GetMapping("verifyEmail/{tokenValue}")
+    @ResponseBody
+    public String verifyNewUserByVerificationTokenId(@PathVariable String tokenValue, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        SecureToken validToken = secureTokenRepository.findByTokenValue(tokenValue);
+
+        // If a token was found and is active, then verify the user
+        if (validToken != null && validToken.isActive()) {
+            User userToVerify = validToken.getUser();
+            userToVerify.addUserGroupToUser(userGroupRepository.findByName("verified"));
+            userRepository.save(userToVerify);
+
+            // Invalidate token after use
+            validToken.deactivateToken();
+            secureTokenRepository.save(validToken);
+
+            return "Success! Your account has been validated!";
+        }
+
+        // There is no valid token; a token with that value either never existed or has been set to inactive.
+        return "Something went wrong.";
     }
 
     @GetMapping("login")
@@ -109,21 +138,21 @@ public class UserController {
             return "user/login";
         }
 
-        User theUser = userRepository.findByEmailAddress(loginFormDTO.getEmailAddress());
+        User user = userRepository.findByEmailAddress(loginFormDTO.getEmailAddress());
 
-        if (theUser == null) {
+        if (user == null) {
             errors.rejectValue("emailAddress","emailAddress.notfound", "Unable to locate an account registered to that email address; please try again.");
             return "user/login";
         }
 
         String providedPassword = loginFormDTO.getPassword();
 
-        if (!theUser.isMatchingPassword(providedPassword)) {
+        if (!user.isMatchingPassword(providedPassword)) {
             errors.rejectValue("password", "password.mismatch", "Incorrect password; please try again");
             return "user/login";
         }
 
-        AuthenticationController.setUserInSession(request.getSession(), theUser);
+        AuthenticationController.setUserInSession(request.getSession(), user);
 
         return "redirect:../";
     }
@@ -240,7 +269,7 @@ public class UserController {
 
         secureTokenRepository.save(emailVerificationToken);
 
-        emailService.sendUserVerificationEmailHTML(theUserEmailAddress);
+        emailService.sendUserVerificationEmailHTML(theUserEmailAddress, emailVerificationToken.getTokenValue());
 
 //        emailService.sendVerificationEmail(
 //                theUserEmailAddress,

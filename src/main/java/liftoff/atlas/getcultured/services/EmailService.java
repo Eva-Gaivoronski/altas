@@ -14,9 +14,8 @@ public class EmailService {
     @Autowired
     private JavaMailSender emailSender;
 
+    // TODO: Remove after removing from DataLoader
     public void sendVerificationEmail(String to, String subject, String content) {
-        //TODO: Replace with HTML email
-        //TODO: Include link to a page that will check tokenValue query parameter and bounce it against the DB to ensure correct User is in session
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject(subject);
@@ -25,23 +24,28 @@ public class EmailService {
     }
 
     // Handles sending the user verification email to Users on request; throws MessagingException to handle SMTP connection/authentication issues
-    public void sendUserVerificationEmailHTML(String to) throws MessagingException {
-        MimeMessage message = emailSender.createMimeMessage();
+    public void sendUserVerificationEmailHTML(String to, String tokenValue) {
+        try {
+            MimeMessage message = emailSender.createMimeMessage();
 
-        message.setFrom(new InternetAddress(System.getenv("APP_EMAIL")));
-        message.setRecipients(MimeMessage.RecipientType.TO,to);
-        message.setSubject("GetCultured - Please verify your email address");
+            message.setFrom(new InternetAddress(System.getenv("APP_EMAIL")));
+            message.setRecipients(MimeMessage.RecipientType.TO,to);
+            message.setSubject("GetCultured - Please verify your email address");
 
-        //TODO: Add in verification token to link
-        String htmlContent =
-                "<p>" +
-                    "Please click the link to finish verifying your account." +
-                    "<br />" +
-                    "<a href=\"http://localhost:8080\">" + "Click me!" + "</a>" +
-                "</p>";
-        message.setContent(htmlContent, "text/html; charset=utf-8");
+            String htmlContent =
+                    "<p>" +
+                            "Please click the link to finish verifying your account." +
+                            "<br />" +
+                            "<a href=\"http://localhost:8080/user/verifyEmail/" + tokenValue +"\">" + "Click me!" + "</a>" +
+                            "</p>";
+            message.setContent(htmlContent, "text/html; charset=utf-8");
 
-        emailSender.send(message);
+            emailSender.send(message);
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
     }
 
     //TODO: Create similar method for a password reset token
