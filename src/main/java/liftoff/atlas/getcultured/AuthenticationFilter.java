@@ -47,9 +47,10 @@ public class AuthenticationFilter implements HandlerInterceptor {
         }
 
         HttpSession session = request.getSession();
-        User user = authenticationController.getUserFromSession(session);
+        User authenticatedUser = authenticationController.getUserFromSession(session);
 
-        if (user != null) {
+        // If a User is returned from the session (not null), the session is authenticated and the URI request is allowed
+        if (authenticatedUser != null) {
             return true;
         }
 
