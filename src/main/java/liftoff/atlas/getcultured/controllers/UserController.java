@@ -9,6 +9,7 @@ import liftoff.atlas.getcultured.models.data.SecureTokenRepository;
 import liftoff.atlas.getcultured.models.data.UserGroupRepository;
 import liftoff.atlas.getcultured.models.data.UserProfileDetailsRepository;
 import liftoff.atlas.getcultured.models.data.UserRepository;
+import liftoff.atlas.getcultured.models.dto.ForgotPasswordFormDTO;
 import liftoff.atlas.getcultured.models.dto.LoginFormDTO;
 import liftoff.atlas.getcultured.models.dto.SignUpFormDTO;
 import liftoff.atlas.getcultured.models.dto.UserProfileDetailsEditFormDTO;
@@ -164,11 +165,74 @@ public class UserController {
         return "redirect:../";
     }
 
-    @GetMapping("/logout")
+    @GetMapping("logout")
     public String logout(HttpServletRequest request) {
         request.getSession().invalidate();
         return "redirect:/user/login";
     }
+
+    @GetMapping("forgot-password")
+    public String displayForgotPasswordForm(Model model) {
+        model.addAttribute(new ForgotPasswordFormDTO());
+        return "user/forgot-password";
+    }
+
+    @PostMapping("forgot-password")
+    public String processForgotPasswordForm(@ModelAttribute @Valid ForgotPasswordFormDTO forgotPasswordFormDTO, Errors errors, Model model) {
+        if(errors.hasErrors()) {
+            return "user/forgot-password";
+        }
+
+        User user = userRepository.findByEmailAddress(forgotPasswordFormDTO.getEmailAddress());
+
+        // If no user was found, communicate issue in error and return to form
+        if (user == null) {
+            errors.rejectValue("emailAddress", "email.notfound", "No user account was found associated with that email address.");
+            return "user/forgot-password";
+        }
+
+        // Create new password reset token, relate it with the user,
+        SecureToken newPasswordResetToken = new SecureToken(user);
+        newPasswordResetToken.setTypePasswordReset();
+        secureTokenRepository.save(newPasswordResetToken);
+
+        emailService.sendPasswordResetEmailHTML(forgotPasswordFormDTO.getEmailAddress(), newPasswordResetToken.getTokenValue());
+
+        // TODO: Update to communicate the email was sent successfully and pass into login template
+        return "redirect:/user/login";
+    }
+
+    @GetMapping("password-reset/{tokenValue}")
+    @ResponseBody
+    public String resetPasswordByValidResetToken(@PathVariable String tokenValue, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        SecureToken validToken = secureTokenRepository.findByTokenValue(tokenValue);
+
+        // If a token was found and is of type password reset
+        if (validToken != null && validToken.isTypePasswordReset()) {
+
+            // If token is active, verify user
+            if (validToken.isActive()) {
+
+                // Retrieve user related to token; pass user as session attribute to be referenced on reset form
+                User userToResetPasswordFor = validToken.getUser();
+                session.setAttribute("userToResetPasswordFor", userToResetPasswordFor);
+
+                // Invalidate token after use & update in token repo
+                validToken.deactivateToken();
+                secureTokenRepository.save(validToken);
+
+                return "Success! Now send User to password reset form page. <a href=\"/\">Return to Homepage</a>";
+            }
+
+            // Token exists in the repo, but is no longer active
+            return "That token is no longer active. <a href=\"/\">Return to Homepage</a>";
+        }
+
+        // There is no valid token found in the repo
+        return "Something went wrong. That token does not exist. <a href=\"/\">Return to Homepage</a>";
+    }
+
 
     @GetMapping("profile/edit")
     public String displayProfileEditPage(Model model, HttpServletRequest request)  {

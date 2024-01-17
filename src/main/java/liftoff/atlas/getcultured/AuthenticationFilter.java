@@ -25,6 +25,7 @@ public class AuthenticationFilter implements HandlerInterceptor {
             "/",
             "/user/sign-up",
             "/user/login",
+            "/user/forgot-password",
             "/user/sendEmail", // Triggers verification email to send
             "/script.js",
             "/styles.css",
@@ -33,7 +34,7 @@ public class AuthenticationFilter implements HandlerInterceptor {
 
     private static final List<String> whitelistUserWildcards = Arrays.asList(
             "/user/verifyEmail/",
-            "/user/password-reset/"
+            "/user/password-reset/" // handles authorizing password reset tby token
     );
 
     private static boolean isWhitelisted(String path) {

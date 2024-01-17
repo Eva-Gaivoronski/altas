@@ -35,10 +35,9 @@ public class EmailService {
 
             String htmlContent =
                     "<p>" +
-                            "Please click the link to finish verifying your account." +
-                            "<br />" +
-                            "<a href=\"http://localhost:8080/user/verifyEmail/" + tokenValue +"\">" + "Click me!" + "</a>" +
-                            "</p>";
+                        "Please click the link below to finish verifying your account: <br />" +
+                        "<a href=\"http://localhost:8080/user/verifyEmail/" + tokenValue +"\">" + "Click me to verify your account! </a>" +
+                    "</p>";
             message.setContent(htmlContent, "text/html; charset=utf-8");
 
             emailSender.send(message);
@@ -52,8 +51,29 @@ public class EmailService {
 
     }
 
-    //TODO: Create similar method for a password reset token
-    public void sendPasswordResetEmail() {
+    public void sendPasswordResetEmailHTML(String to, String tokenValue) {
+        try {
+            MimeMessage message = emailSender.createMimeMessage();
+
+            message.setFrom(new InternetAddress(System.getenv("APP_EMAIL")));
+            message.setRecipients(MimeMessage.RecipientType.TO,to);
+            message.setSubject("GetCultured - Forgot My Password Request");
+
+            String htmlContent =
+                    "<p>" +
+                        "Please click the link below to confirm you want to reset your password: <br />" +
+                        "<a href=\"http://localhost:8080/user/password-reset/" + tokenValue +"\">" + "Click me to reset password!</a>" +
+                    "</p>";
+            message.setContent(htmlContent, "text/html; charset=utf-8");
+
+            emailSender.send(message);
+
+        }
+
+        // Catches MessagingException to handle SMTP connection/authentication issues
+        catch (MessagingException e) {
+            e.printStackTrace();
+        }
 
     }
 
