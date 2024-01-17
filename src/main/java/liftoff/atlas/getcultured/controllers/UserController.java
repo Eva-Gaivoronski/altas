@@ -1,5 +1,6 @@
 package liftoff.atlas.getcultured.controllers;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -231,18 +232,20 @@ public class UserController {
 
     @GetMapping("sendEmail")
     @ResponseBody
-    public String sendEmail() {
+    public String sendEmail() throws MessagingException {
         String theUserEmailAddress = System.getenv("TEST_USER_EMAIL"); //Retrieves test user's email from the env variable
         User theUser = userRepository.findByEmailAddress(theUserEmailAddress);
         SecureToken emailVerificationToken = new SecureToken(theUser,"Email verification token");
 
         secureTokenRepository.save(emailVerificationToken);
 
-        emailService.sendVerificationEmail(
-                theUserEmailAddress,
-                "Test send from SpringBoot",
-                "This is a test email being sent from my local app. The token value is: " + emailVerificationToken.getTokenValue()
-        );
+        emailService.sendUserVerificationEmailHTML(theUserEmailAddress);
+
+//        emailService.sendVerificationEmail(
+//                theUserEmailAddress,
+//                "Test send from SpringBoot",
+//                "This is a test email being sent from my local app. The token value is: " + emailVerificationToken.getTokenValue()
+//        );
 
         return "Email sent!";
     }

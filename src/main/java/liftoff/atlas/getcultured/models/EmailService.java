@@ -1,5 +1,8 @@
 package liftoff.atlas.getcultured.models;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,6 +21,22 @@ public class EmailService {
         message.setTo(to);
         message.setSubject(subject);
         message.setText(content);
+        emailSender.send(message);
+    }
+
+    // Handles sending the user verification email to Users on request; throws MessagingException to handle SMTP connection/authentication issues
+    public void sendUserVerificationEmailHTML(String to) throws MessagingException {
+        MimeMessage message = emailSender.createMimeMessage();
+
+        message.setFrom(new InternetAddress(System.getenv("APP_EMAIL")));
+        message.setRecipients(MimeMessage.RecipientType.TO,to);
+        message.setSubject("GetCultured - Please verify your email address");
+
+//        String tokenEmailHtmlTemplate = read
+
+        String htmlContent = "<p><a href=\"http://localhost:8080\">Click me!</a></p>";
+        message.setContent(htmlContent, "text/html; charset=utf-8");
+
         emailSender.send(message);
     }
 
