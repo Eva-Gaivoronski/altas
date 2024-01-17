@@ -64,10 +64,11 @@ public class DataLoader {
 //            userRepository.save(user1);
 
 
-            SecureToken user1EmailVerificationToken = new SecureToken(user1,"Email verification token");
+            if(sendVerificationEmailEnabled) {
+            SecureToken user1EmailVerificationToken = new SecureToken(user1);
+            user1EmailVerificationToken.setTypeVerify();
             secureTokenRepository.save(user1EmailVerificationToken);
 
-            if(sendVerificationEmailEnabled) {
                 emailService.sendVerificationEmail(
                         user1.getEmailAddress(),
                         "GetCultured - Email sent from SpringBoot project",

@@ -92,7 +92,8 @@ public class UserController {
         User newUser = new User(signUpFormDTO.getUsername(), signUpFormDTO.getEmailAddress(), signUpFormDTO.getPassword(), registeredUserGroup); //registeredUserGroup added to all new Users.
         userRepository.save(newUser);
 
-        SecureToken newUserVerificationToken = new SecureToken(newUser,"Email verification token");
+        SecureToken newUserVerificationToken = new SecureToken(newUser);
+        newUserVerificationToken.setTypeVerify();
         secureTokenRepository.save(newUserVerificationToken);
 
         emailService.sendUserVerificationEmailHTML(signUpFormDTO.getEmailAddress(), newUserVerificationToken.getTokenValue());
@@ -104,25 +105,31 @@ public class UserController {
 
     @GetMapping("verifyEmail/{tokenValue}")
     @ResponseBody
-    public String verifyNewUserByVerificationTokenId(@PathVariable String tokenValue, HttpServletRequest request) {
-        HttpSession session = request.getSession();
+    public String verifyNewUserByVerificationTokenId(@PathVariable String tokenValue) {
         SecureToken validToken = secureTokenRepository.findByTokenValue(tokenValue);
 
-        // If a token was found and is active, then verify the user
-        if (validToken != null && validToken.isActive()) {
-            User userToVerify = validToken.getUser();
-            userToVerify.addUserGroupToUser(userGroupRepository.findByName("verified"));
-            userRepository.save(userToVerify);
+        // If a token was found and is of type verify
+        if (validToken != null && validToken.isTypeVerify()) {
 
-            // Invalidate token after use
-            validToken.deactivateToken();
-            secureTokenRepository.save(validToken);
+            // If token is active, verify user
+            if (validToken.isActive()) {
+                User userToVerify = validToken.getUser();
+                userToVerify.addUserGroupToUser(userGroupRepository.findByName("verified"));
+                userRepository.save(userToVerify);
 
-            return "Success! Your account has been validated!";
+                // Invalidate token after use & update in token repo
+                validToken.deactivateToken();
+                secureTokenRepository.save(validToken);
+
+                return "Success! Your account has been validated! <a href=\"/\">Return to Homepage</a>";
+            }
+
+            // Token exists in the repo, but is no longer active
+            return "That token is no longer active. <a href=\"/\">Return to Homepage</a>";
         }
 
-        // There is no valid token; a token with that value either never existed or has been set to inactive.
-        return "Something went wrong.";
+        // There is no valid token found in the repo
+        return "Something went wrong. <a href=\"/\">Return to Homepage</a>";
     }
 
     @GetMapping("login")
@@ -191,7 +198,7 @@ public class UserController {
         // Creates a new DTO that will be populated by existing values for the current user's profile
         UserProfileDetailsEditFormDTO currentUserProfileDetailsDTO = new UserProfileDetailsEditFormDTO();
 
-        // TODO: Perhaps moves this functionality into a method on UserProfileDetailsDTO class
+        // TODO: Perhaps move this functionality into a method on UserProfileDetailsDTO class
         // Accesses the data stored in the user's existing profile and stores it in the DTO to be passed to the view
         currentUserProfileDetailsDTO.setFirstName(currentUserProfileDetails.getFirstName());
         currentUserProfileDetailsDTO.setLastName(currentUserProfileDetails.getLastName());
@@ -265,7 +272,8 @@ public class UserController {
     public String sendEmail() throws MessagingException {
         String theUserEmailAddress = System.getenv("TEST_USER_EMAIL"); //Retrieves test user's email from the env variable
         User theUser = userRepository.findByEmailAddress(theUserEmailAddress);
-        SecureToken emailVerificationToken = new SecureToken(theUser,"Email verification token");
+        SecureToken emailVerificationToken = new SecureToken(theUser);
+        emailVerificationToken.setTypeVerify();
 
         secureTokenRepository.save(emailVerificationToken);
 

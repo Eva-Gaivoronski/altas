@@ -21,7 +21,7 @@ public class AuthenticationFilter implements HandlerInterceptor {
     @Autowired
     AuthenticationController authenticationController;
 
-    private static final List<String> whitelist = Arrays.asList(
+    private static final List<String> publicWhitelist = Arrays.asList(
             "/",
             "/user/sign-up",
             "/user/login",
@@ -31,12 +31,24 @@ public class AuthenticationFilter implements HandlerInterceptor {
             "/user-styles.css"
     );
 
+    private static final List<String> whitelistUserWildcards = Arrays.asList(
+            "/user/verifyEmail/",
+            "/user/password-reset/"
+    );
+
     private static boolean isWhitelisted(String path) {
-        for (String pathRoot : whitelist) {
+        for (String pathRoot : publicWhitelist) {
             if (path.equals(pathRoot)) {
                 return true;
             }
         }
+
+        for (String pathRoot : whitelistUserWildcards) {
+            if (path.startsWith(pathRoot)) {
+                return true;
+            }
+        }
+
         return false;
     }
 

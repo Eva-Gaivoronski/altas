@@ -27,31 +27,48 @@ public class SecureToken {
 
     public SecureToken() {}
 
-    public SecureToken(User user, LocalDateTime expirationTimestamp, String type) {
+    public SecureToken(User user) {
         this.user = user;
-        this.tokenValue = generateToken();
-        this.tokenType = type;
-        this.isActive = true;
+        this.tokenValue = generateTokenValue();
+        this.isActive = false;
     }
 
-    // Method for testing generating in email, absent of user for test
-    public SecureToken(User user, String type) {
-        this.user = user;
-        this.tokenValue = generateToken();
-        this.tokenType = type;
-        this.isActive = true;
-    }
+    // TODO: Add expiration functionality for tokens; disabled for now
+//    public SecureToken(User user, LocalDateTime expirationTimestamp) {
+//        this.user = user;
+//        this.tokenValue = generateTokenValue();
+//        this.isActive = false;
+//    }
 
-    public static String generateToken() {
+    public static String generateTokenValue() {
         return UUID.randomUUID().toString();
+    }
+
+    public void setTypeVerify() {
+        this.setTokenType("email_verify");
+        this.setActive(true);
+    }
+
+    public void setTypePasswordReset() {
+        this.setTokenType("password_reset");
+        this.setActive(true);
+    }
+
+    public boolean isTypeVerify() {
+        return this.tokenType.equals("email_verify");
+    }
+
+    public  boolean isTypePasswordReset() {
+        return this.tokenType.equals("password_reset");
     }
 
     public void deactivateToken() {
         this.isActive = false;
     }
 
-
-
+    public int getUserId() {
+        return this.user.getUserId();
+    }
 
     public int getTokenId() {
         return tokenId;
@@ -83,10 +100,6 @@ public class SecureToken {
 
     public void setTokenType(String tokenType) {
         this.tokenType = tokenType;
-    }
-
-    public int getUserId() {
-        return this.user.getUserId();
     }
 
     public boolean isActive() {

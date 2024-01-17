@@ -23,8 +23,9 @@ public class EmailService {
         emailSender.send(message);
     }
 
-    // Handles sending the user verification email to Users on request; throws MessagingException to handle SMTP connection/authentication issues
+    // Handles sending the user verification email to Users on request
     public void sendUserVerificationEmailHTML(String to, String tokenValue) {
+
         try {
             MimeMessage message = emailSender.createMimeMessage();
 
@@ -42,7 +43,10 @@ public class EmailService {
 
             emailSender.send(message);
 
-        } catch (MessagingException e) {
+        }
+
+        // Catches MessagingException to handle SMTP connection/authentication issues
+        catch (MessagingException e) {
             e.printStackTrace();
         }
 
