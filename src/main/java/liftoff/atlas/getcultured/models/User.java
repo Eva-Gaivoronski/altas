@@ -48,7 +48,7 @@ public class User {
 
     // User constructor w/ no UserGroup param
     public User(String username, String emailAddress, String password) {
-        this.username = username;
+        this.username = username.trim().toLowerCase();
         this.emailAddress = emailAddress;
         this.passwordHash = encoder.encode(password);
         this.userProfileDetails = new UserProfileDetails();
@@ -56,8 +56,8 @@ public class User {
 
     // User constructor that takes a userGroup as an argument
     public User(String username, String emailAddress, String password, UserGroup userGroup) {
-        this.username = username;
-        this.emailAddress = emailAddress;
+        this.username = username.trim().toLowerCase();
+        this.emailAddress = emailAddress.trim().toLowerCase();
         this.passwordHash = encoder.encode(password);
         this.userProfileDetails = new UserProfileDetails();
         this.addUserGroupToUser(userGroup);
@@ -90,7 +90,7 @@ public class User {
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.username = username.trim().toLowerCase();
     }
 
     public String getEmailAddress() {
@@ -98,7 +98,7 @@ public class User {
     }
 
     public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
+        this.emailAddress = emailAddress.trim().toLowerCase();
     }
 
     public UserProfileDetails getUserProfileDetails() {

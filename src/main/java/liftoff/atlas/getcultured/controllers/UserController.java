@@ -70,13 +70,21 @@ public class UserController {
         User existingUsername = userRepository.findByUsername(signUpFormDTO.getUsername());
         User existingEmailAddress = userRepository.findByEmailAddress(signUpFormDTO.getEmailAddress());
 
+        // Pass error if email address is already registered
         if (existingEmailAddress != null) {
-            errors.rejectValue("emailAddress", "emailAddress.alreadyregistered", "An account using that email address has already been registered");
+            errors.rejectValue("emailAddress", "emailAddress.alreadyregistered", "An account using that email address has already been registered; please provide a new email address for account registration.");
             return "user/create-user";
         }
 
+        // Pass error if the provided username contains any whitespace characters
+        if (signUpFormDTO.getUsername().contains(" ")) {
+            errors.rejectValue("username", "username.contains.spaces", "A username cannot contain whitespace; please remove any spaces and try again.");
+            return "user/create-user";
+        }
+
+        // Pass error if the provided username is already taken by another user
         if (existingUsername != null) {
-            errors.rejectValue("username", "username.alreadyexists", "A user with that username already exists");
+            errors.rejectValue("username", "username.alreadyexists", "That username is already taken; please provide a unique username for account registration.");
             return "user/create-user";
         }
 
@@ -232,7 +240,6 @@ public class UserController {
         // There is no valid token found in the repo
         return "Something went wrong. That token does not exist. <a href=\"/\">Return to Homepage</a>";
     }
-
 
     @GetMapping("profile/edit")
     public String displayProfileEditPage(Model model, HttpServletRequest request)  {

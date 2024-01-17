@@ -33,7 +33,7 @@ public class SignUpFormDTO {
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.username = username.trim().toLowerCase();
     }
 
     public String getEmailAddress() {
@@ -41,7 +41,7 @@ public class SignUpFormDTO {
     }
 
     public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
+        this.emailAddress = emailAddress.trim().toLowerCase();
     }
 
     public String getPassword() {
