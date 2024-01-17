@@ -1,4 +1,4 @@
-package liftoff.atlas.getcultured.models;
+package liftoff.atlas.getcultured.services;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
@@ -32,9 +32,13 @@ public class EmailService {
         message.setRecipients(MimeMessage.RecipientType.TO,to);
         message.setSubject("GetCultured - Please verify your email address");
 
-//        String tokenEmailHtmlTemplate = read
-
-        String htmlContent = "<p><a href=\"http://localhost:8080\">Click me!</a></p>";
+        //TODO: Add in verification token to link
+        String htmlContent =
+                "<p>" +
+                    "Please click the link to finish verifying your account." +
+                    "<br />" +
+                    "<a href=\"http://localhost:8080\">" + "Click me!" + "</a>" +
+                "</p>";
         message.setContent(htmlContent, "text/html; charset=utf-8");
 
         emailSender.send(message);

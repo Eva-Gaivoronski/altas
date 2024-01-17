@@ -1,6 +1,6 @@
 package liftoff.atlas.getcultured;
 
-import liftoff.atlas.getcultured.models.EmailService;
+import liftoff.atlas.getcultured.services.EmailService;
 import liftoff.atlas.getcultured.models.SecureToken;
 import liftoff.atlas.getcultured.models.User;
 import liftoff.atlas.getcultured.models.UserGroup;
@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Configuration

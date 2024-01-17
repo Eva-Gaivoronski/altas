@@ -12,6 +12,7 @@ import liftoff.atlas.getcultured.models.data.UserRepository;
 import liftoff.atlas.getcultured.models.dto.LoginFormDTO;
 import liftoff.atlas.getcultured.models.dto.SignUpFormDTO;
 import liftoff.atlas.getcultured.models.dto.UserProfileDetailsEditFormDTO;
+import liftoff.atlas.getcultured.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
