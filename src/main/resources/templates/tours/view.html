@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${tour.name}">Tour Details</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1 th:text="${tour.name}">Tour Name</h1>
+
+    <!-- Tour details -->
+    <div class="tour-details">
+        <p><strong>Description:</strong> <span th:text="${tour.summaryDescription}">Description</span></p>
+        <p><strong>Estimated Length:</strong> <span th:text="${tour.estimatedLength}">Length</span></p>
+<!--        <p><strong>Estimated Travel Time:</strong> <span th:text="${tour.estimatedTravelTime}">Travel Time</span></p>-->
+<!--        <p><strong>User Rating:</strong> <span th:text="${tour.userRating}">Rating</span></p>-->
+
+        <img th:src="${tour.imagePath != null ? '/' + tour.imagePath : '/defaultLogo/DefaultLogo.jpg'}" alt="Tour Image" class="tour-image"/>
+
+        <!-- Add more tour properties as needed -->
+
+        <!-- Iterating through each stop -->
+        <div th:each="stop : ${tour.stops}">
+            <div class="stop-block">
+                <label>Stop Name:</label>
+                <h3 th:text="${stop.name}" style="color: black;"></h3>
+                <!-- Other stop details here -->
+                <!-- Link to detailed stop view -->
+<!--                <a th:href="@{/stop/{id}(id=${stop.id})}" th:text="${stop.name}">Stop Name</a>-->
+                <a th:href="@{/stops/{stopId}(stopId=${stop.id}, tourId=${tour.id})}" th:text="View">Stop Name</a>
+            </div>
+        </div>
+
+        <!-- Button for redirecting to update page -->
+        <div class="button-container">
+            <a th:href="@{/tours/update/{id}(id=${tour.id})}" class="update-button">Update Tour</a>
+
+        </div>
+    </div>
+
+    <!-- Back to Tour List link -->
+    <p><a href="/tours" class="back-to-list">Back to Tour List</a></p>
+</div>
+
+<!-- Add scripts or additional styling -->
+
+</body>
+</html>

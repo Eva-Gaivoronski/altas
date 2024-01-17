@@ -15,11 +15,13 @@ public class StopTag extends AbstractEntity {
     @NotNull(message = "Tag cannot be null")
     private Tag tag;
 
+    public StopTag() { }
 
     public StopTag(Stop stop, Tag tag) {
         super();
         this.stop = stop;
         this.tag = tag;
+
     }
 
     public Stop getStop() {

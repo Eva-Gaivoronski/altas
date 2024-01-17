@@ -18,6 +18,7 @@ public class Tag extends AbstractEntity {
     @ManyToOne
     private TagGroup tagGroup;
 
+    public Tag() { }
 
     public Tag(String label, String color, TagGroup tagGroup) {
         super();

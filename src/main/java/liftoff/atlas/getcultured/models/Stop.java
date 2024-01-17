@@ -3,13 +3,17 @@ package liftoff.atlas.getcultured.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Stop extends AbstractEntity {
 
-    @ManyToOne
-    private Tour tour;
+    private int updateId;
+
+    private String imagePath;
+    @ManyToMany(mappedBy = "stops")
+    private List<Tour> tours = new ArrayList<>();
     private boolean stopStatus;
     @Size(max = 300, message = "Description can be no longer than 300 characters")
     private String stopDescription;
@@ -44,9 +48,9 @@ public class Stop extends AbstractEntity {
     @OneToMany(mappedBy = "stop")
     private List<StopTag> stopTag;
 
-    public Stop(Tour tour, boolean stopStatus, String stopDescription, String streetAddress, String cityName, String stateName, int zipCode, Double latitude, Double longitude, MapMarker mapMarker, int cost, String hoursOfOperation, int stopRating, String category, boolean popularStopDesignation, List<StopTag> stopTags) {
+    public Stop(int id, String name, Tour tour, boolean stopStatus, String stopDescription, String streetAddress, String cityName, String stateName, int zipCode, Double latitude, Double longitude, MapMarker mapMarker, int cost, String hoursOfOperation, int stopRating, String category, boolean popularStopDesignation, List<StopTag> stopTags) {
         super();
-        this.tour = tour;
+        this.tours = tours;
         this.stopStatus = stopStatus;
         this.stopDescription = stopDescription;
         this.streetAddress = streetAddress;
@@ -62,14 +66,24 @@ public class Stop extends AbstractEntity {
         this.category = category;
         this.popularStopDesignation = popularStopDesignation;
         this.stopTag = stopTags;
+        this.imagePath = imagePath;
+        this.updateId = updateId;
     }
 
-    public Tour getTour() {
-        return tour;
+    public Stop() {
+
     }
 
-    public void setTour(Tour tour) {
-        this.tour = tour;
+    public void setUpdateId(int updateId) {
+        this.updateId = updateId;
+    }
+
+    public List<Tour> getTours() {
+        return tours;
+    }
+
+    public void setTours(List<Tour> tours) {
+        this.tours = tours;
     }
 
     public boolean isStopStatus() {
@@ -190,5 +204,13 @@ public class Stop extends AbstractEntity {
 
     public void setStopTag(List<StopTag> stopTag) {
         this.stopTag = stopTag;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Stop List</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+<div class="container">
+    <h2>Stop List</h2>
+
+    <!-- Display the list of stops -->
+    <table>
+        <thead>
+        <tr>
+            <th>Stop ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Zip Code</th>
+            <th>Rating</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iterate over the list of stops -->
+        <tr th:each="stop : ${stops}">
+            <td th:text="${stop.id}"></td>
+            <td th:text="${stop.name}"></td>
+            <td th:text="${stop.stopDescription}"></td>
+            <td th:text="${stop.streetAddress}"></td>
+            <td th:text="${stop.cityName}"></td>
+            <td th:text="${stop.stateName}"></td>
+            <td th:text="${stop.zipCode}" style="text-align: center;"></td>
+            <td th:text="${stop.stopRating}" style="text-align: center;"></td>
+
+            <td>
+<!--                    For testing and knowing current context of application-->
+<!--                <p>Current context: <span th:text="${context}"></span></p>-->
+
+                <div th:if="${context == 'update'}">
+                    <!-- Button for updating a tour -->
+                    <a th:href="@{/stops/{stopId}(stopId=${stop.id}, context='update')}" style="color: green;">View</a>
+                </div>
+                <div th:if="${context == 'create'}">
+                    <!-- Button for creating a new tour -->
+                    <a th:href="@{/stops/{stopId}(stopId=${stop.id}, context='create')}" style="color: green;">View</a>
+                </div>
+                <div th:if="${context == 'none'}">
+                    <!-- Button for creating a new tour -->
+                    <a th:href="@{/stops/{stopId}(stopId=${stop.id}, context='none')}" style="color: green;">View</a>
+                </div>
+
+                <!-- Conditionally render the button based on context -->
+
+                <div th:if="${context == 'update'}">
+                    <!-- Use a form with POST method to add a stop to the tour -->
+                    <form th:action="@{/tours/update/{tourId}/addStop/{stopId}(tourId=${tourId}, stopId=${stop.id})}" method="post">
+                        <button type="submit">Select for Tour</button>
+                    </form>
+                </div>
+                <div th:if="${context == 'create'}">
+                    <!-- Button for creating a new tour -->
+                    <a th:href="@{/tours/create/addStop/{stopId}(stopId=${stop.id})}">Select for Tour</a>
+                </div>
+
+
+                <!-- Conditionally render the Delete button based on context -->
+                <div th:if="${context == 'none'}">
+                    <form th:action="@{/stops/{stopId}/delete(stopId=${stop.id})}" method="post">
+                        <button type="submit" onclick="return confirmDelete()">Delete</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+
+        <script>
+            function confirmDelete() {
+                return confirm('Are you sure you want to delete this stop?');
+            }
+
+            // JavaScript code to add a stop to the tour
+            document.querySelectorAll('.add-stop-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    let tourId = this.getAttribute('data-tour-id');
+                    let stopId = this.getAttribute('data-stop-id');
+
+                    fetch(`/tours/update/${tourId}/addStop/${stopId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        // Include any necessary data in the request body
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Display success message and update the page
+                            alert(data.message);
+                            // Update the page with stop details (e.g., add to the list of stops)
+                            // You can access the stop details from 'data.stopName'
+                        } else {
+                            // Display error message if the request was not successful
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Handle and display any network or server errors
+                    });
+                });
+            });
+
+        </script>
+    </table>
+
+
+    <div th:if="${context == 'none'}">
+        <!-- Button for creating a new tour -->
+        <!-- Link to create a new stop -->
+        <p><a th:href="@{/stops/create}">Create a New Stop</a></p>
+    </div>
+
+    <!-- Conditional back link based on the context -->
+    <div th:if="${context == 'create'}">
+        <p><a href="/tours/create" class="back-to-tour-creation">Back to Tour Creation</a></p>
+    </div>
+    <div th:if="${context == 'update'}">
+        <p><a th:href="@{/tours/update/{id}(id=${tourId})}" class="back-to-tour-update">Back to Tour Update</a></p>
+    </div>
+
+    <!-- Back to Index link -->
+    <p><a href="/tours/index" class="back-to-index">Back to Homepage</a></p>
+
+
+</div>
+
+</body>
+</html>
+

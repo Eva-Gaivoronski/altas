@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.Map;
 
 
 @Controller
+@RequestMapping("google")
 public class GoogleController {
 
 
@@ -49,8 +52,9 @@ public class GoogleController {
 
     }
 
-    @PostMapping("{userId}/{tourId}/stop")
+    @PostMapping("")
     @Value(value = "39.0997265,-94.5785667")
+    @ResponseBody
     private static void getStopDetails (@RequestParam String location, String category, String searchTerm ) {
 
         final String apiKey = "&key="

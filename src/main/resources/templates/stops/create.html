@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Stop</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+<div class="container">
+    <h2>Create Stop</h2>
+
+    <!-- Form for creating a new stop -->
+    <form action="/stops/create" method="post" th:object="${stopForm}" enctype="multipart/form-data">
+        <!-- Stop Name -->
+        <label for="stopName">Stop Name:</label>
+        <input type="text" id="stopName" name="stopName" th:field="*{stopName}" required>
+        <div class="error" th:if="${#fields.hasErrors('stopName')}" th:errors="*{stopName}"></div>
+
+        <!-- Stop Description -->
+        <label for="stopDescription">Stop Description:</label>
+        <textarea id="stopDescription" name="stopDescription" th:field="*{description}" required></textarea>
+        <div class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+
+        <!-- Stop Address -->
+        <label for="streetAddress">Street Address:</label>
+        <textarea id="streetAddress" name="streetAddress" th:field="*{streetAddress}" required></textarea>
+        <div class="error" th:if="${#fields.hasErrors('streetAddress')}" th:errors="*{streetAddress}"></div>
+
+        <!-- Stop City -->
+        <label for="cityName">City:</label>
+        <textarea id="cityName" name="cityName" th:field="*{cityName}" required></textarea>
+        <div class="error" th:if="${#fields.hasErrors('cityName')}" th:errors="*{cityName}"></div>
+
+        <!-- State Dropdown -->
+        <label for="stateName">State:</label>
+        <select id="stateName" name="stateName" required>
+            <option value="">Select State</option>
+            <!-- Options will be populated by JavaScript -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    fetch('/states/states.json')
+                        .then(response => response.json())
+                        .then(states => {
+                            const selectElement = document.getElementById('stateName');
+                            states.forEach(state => {
+                                const option = document.createElement('option');
+                                option.value = state.abbreviation;
+                                option.textContent = state.name;
+                                selectElement.appendChild(option);
+                            });
+                        })
+                        .catch(error => console.error('Error loading state data:', error));
+                });
+            </script>
+        </select>
+        <div class="error" th:if="${#fields.hasErrors('stateName')}" th:errors="*{stateName}"></div>
+
+
+        <!-- Stop Zip Code -->
+        <label for="zipCode">Zip Code:</label>
+        <textarea id="zipCode" name="zipCode" th:field="*{zipCode}" required></textarea>
+        <div class="error" th:if="${#fields.hasErrors('zipCode')}" th:errors="*{zipCode}"></div>
+
+
+        <!-- Additional Stop Details -->
+        <!-- Include other fields as necessary, e.g., address, cost, latitude, longitude -->
+
+        <!-- Image Upload -->
+        <label for="image">Stop Image:</label>
+        <input type="file" id="image" name="image" accept=".jpg, .jpeg, .png" onchange="previewStopImage(this)">
+
+        <!-- Image Preview -->
+        <img id="stopImagePreview" class="image-preview" alt="Stop Image" style="display:none;">
+
+        <!-- Hidden field for referrer -->
+        <input type="hidden" name="referrer" th:value="${referrer}" />
+
+        <!-- Submit Button -->
+        <button type="submit" class="save-button">Save Stop</button>
+    </form>
+
+    <!-- Back to Tour Creation link -->
+    <p><a href="/stops" class="back-to-stop-list">Back to Stop List</a></p>
+</div>
+
+<script th:inline="javascript">
+    function previewStopImage(input) {
+        let imgElement = document.getElementById('stopImagePreview');
+        if (input.files && input.files[0]) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                imgElement.style.display = 'block';
+                imgElement.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            imgElement.style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>
+
+

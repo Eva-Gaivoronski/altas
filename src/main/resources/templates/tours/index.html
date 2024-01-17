@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tour Index</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Tour</h2>
+
+    <!-- Buttons for tour actions -->
+    <div class="action-buttons">
+        <a th:href="@{/tours/create}">
+            <button>Create Tour</button>
+        </a>
+        <a th:href="@{/tours}">
+            <button>List Tours</button>
+        </a>
+
+        <a th:href="@{/stops/create}">
+            <button>Create Stop</button>
+        </a>
+        <a th:href="@{/stops}">
+            <button>List Stops</button>
+        </a>
+
+    </div>
+
+    <!-- Button to redirect to the homepage -->
+    <div class="home-button">
+        <a th:href="@{/}">
+            <button>Home</button>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

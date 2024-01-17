@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Tour</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+<div class="container">
+    <h2>Update Tour</h2>
+
+    <form th:action="@{/tours/update/{id}(id=${tourForm.id})}" method="post" th:object="${tourForm}" enctype="multipart/form-data">
+
+        <!-- Tour Name -->
+        <label for="name">Tour Name:</label>
+        <input type="text" id="name" name="name" th:field="*{name}" required>
+        <div class="error" th:errors="*{name}"></div>
+
+        <!-- Summary Description -->
+        <label for="summaryDescription">Description:</label>
+        <textarea id="summaryDescription" name="summaryDescription" th:field="*{summaryDescription}" required></textarea>
+
+        <!-- Estimated Length -->
+        <label for="estimatedLength">Estimated Length:</label>
+        <input type="text" id="estimatedLength" name="estimatedLength" th:field="*{estimatedLength}" required>
+
+
+<!--        These are for Updating the tour image. Shouldnt be hard to implement. -->
+<!--        &lt;!&ndash; Image Upload &ndash;&gt;-->
+<!--        <label for="image">Tour Image:</label>-->
+<!--        <input type="file" id="image" name="image" accept=".jpg, .jpeg, .png" onchange="previewTourImage(this)">-->
+
+<!--        &lt;!&ndash; Image Preview for Tour &ndash;&gt;-->
+<!--        <img id="tourImagePreview" class="image-preview" alt="Tour Image" style="display:none;">-->
+
+        <!-- Stops Section -->
+        <div id="stopsSection">
+            <!-- Dynamic Fields for Each Stop -->
+            <div th:each="stop, iterStat : *{stops}" class="stop-item" th:id="'stop-' + ${iterStat.index}">
+                <input type="hidden" th:field="*{stops[__${iterStat.index}__].id}" />
+                <div class="stop-info">
+                    <label>Stop Name:</label>
+                    <span th:text="${stop.stopName}"></span>
+                    <!-- Link to detailed stop view -->
+<!--                    <a th:href="@{/stops/view/{id}(id=${stop.id})}" th:text="${stop.stopName}">View</a>-->
+                    <a th:href="@{/stops/{stopId}(stopId=${stop.id}, tourId=${tourForm.id}, context='update')}">View</a>
+<!--                    <a th:href="@{/stops/{stopId}(stopId=${stop.id}, tourId=${tour.id})}" th:text="View">Stop Name</a>-->
+<!--                    <button type="button" class="delete-stop-button" th:attr="data-stop-id=${stop.id}" onclick="removeStopFromTour(${tourForm.id}, ${stop.id})">Remove Stop</button>-->
+                </div>
+            </div>
+        </div>
+
+<!--        No longer allowing stop selection-->
+<!--        &lt;!&ndash; Button to Open Stop Selection Modal or Page &ndash;&gt;-->
+<!--        <div class="button-container">-->
+<!--            <a th:href="@{'/tours/update/selectStop/' + ${tourForm.id} + '?context=update'}" class="select-stop-button">Select Stop</a>-->
+<!--        </div>-->
+
+        <!-- Add this button to your update tour form -->
+        <form th:action="@{/tours/update/{tourId}/finalize(tourId=${tourForm.id})}" method="post">
+            <button type="submit">Finalize Update</button>
+        </form>
+
+
+    </form>
+
+    <!-- Cancel Button -->
+    <a th:href="@{/tours/update/cancel}" class="cancel-button" style="background-color: red; color: white;">Cancel Update</a>
+</div>
+
+<script th:inline="javascript">
+    function removeStopFromTourUpdate(tourId, stopId) {
+        if (confirm('Are you sure you want to remove this stop?')) {
+            fetch(`/tours/update/${tourId}/removeStop/${stopId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    // Include CSRF token if necessary
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Stop removed successfully');
+                    window.location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert('Error removing stop');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    }
+
+    function addStop() {
+        let stopIndex = document.getElementById("stopsSection").childElementCount;
+
+        let newStopHtml = '<div class="stop" id="stop-' + stopIndex + '">' +
+            '<h3>Stop ' + (stopIndex + 1) + '</h3>' +
+            '<label for="stops[' + stopIndex + '].stopName">Stop Name:</label>' +
+            '<input type="text" id="stops[' + stopIndex + '].stopName" name="stops[' + stopIndex + '].stopName" required>' +
+            '<label for="stops[' + stopIndex + '].stopDescription">Stop Description:</label>' +
+            '<textarea id="stops[' + stopIndex + '].stopDescription" name="stops[' + stopIndex + '].stopDescription" required></textarea>' +
+            '<label for="stops[' + stopIndex + '].image">Stop Image:</label>' +
+            '<input type="file" id="stops[' + stopIndex + '].image" name="stops[' + stopIndex + '].image" accept=".jpg, .jpeg, .png" onchange="previewImage(this, \'imagePreview_' + stopIndex + '\')" required>' +
+            '<img id="imagePreview_' + stopIndex + '" class="image-preview" alt="Image Preview">' +
+            '<button type="button" class="delete-stop-button" onclick="confirmDeleteStop(' + stopIndex + ')">Delete Stop</button>' +
+            '<hr>' +
+            '</div>';
+
+        document.getElementById("stopsSection").insertAdjacentHTML("beforeend", newStopHtml);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    bindDeleteButtons();
+});
+
+
+    function updateStopIndices() {
+        document.querySelectorAll('.stop-item').forEach((element, index) => {
+            element.id = 'stop-' + index;
+            element.querySelector('.delete-stop-button').setAttribute('data-stop-index', index);
+            // Update any other fields that depend on the index
+        });
+    }
+
+    function previewTourImage(input) {
+        let imgElement = document.getElementById('tourImagePreview');
+        if (input.files && input.files[0]) {
+            let reader = new FileReader();
+            reader.onload =
+            function (e) {
+            imgElement.src = e.target.result;
+            imgElement.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+        } else {
+            imgElement.src = '';
+            imgElement.style.display = 'none';
+        }
+    }
+
+    // This function updates the tour form dynamically when selecting stops.
+    function updateTourFormAndSelectStop(tourId) {
+        let formData = {
+            'name': document.getElementById('name').value,
+            'summaryDescription': document.getElementById('summaryDescription').value,
+            'estimatedLength': document.getElementById('estimatedLength').value,
+            'stops': []
+        };
+
+        // Add existing stops to the form data
+        let stopItems = document.querySelectorAll('.stop-item');
+        stopItems.forEach(item => {
+            let stopId = item.querySelector('input[type="hidden"]').value;
+            formData.stops.push(parseInt(stopId));
+        });
+
+        fetch(`/tours/update/${tourId}/updateForm`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                // Include CSRF token if necessary
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if(response.ok) {
+                window.location.href = `/tours/update/selectStop/${tourId}`; // Redirect to stop selection
+            } else {
+                console.error('Error updating tour form');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Bind the "Select Stop" button to update the form before proceeding
+    document.querySelector('.select-stop-button').addEventListener('click', function(e) {
+        e.preventDefault();
+        let tourId = this.href.split('/').pop();
+        updateTourFormAndSelectStop(tourId);
+    });
+
+    function addStopToTourSession(tourId, stopId) {
+        fetch(`/tours/update/${tourId}/session/addStop?stopId=${stopId}`, {
+            method: 'POST',
+            // Other necessary headers
+        })
+        .then(response => {
+            if (response.ok) {
+                addStopToDom(stopId);
+            } else {
+                alert("Failed to add stop");
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function removeStopFromTourSession(tourId, stopId) {
+        fetch(`/tours/update/${tourId}/session/removeStop?stopId=${stopId}`, {
+            method: 'POST',
+            // Other necessary headers
+        })
+        .then(response => {
+            if (response.ok) {
+                removeStopFromDom(stopId);
+            } else {
+                alert("Failed to remove stop");
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function addStopToDom(stopId, stopName) {
+        // Create elements for the new stop
+        let stopDiv = document.createElement('div');
+        stopDiv.classList.add('stop-item');
+        stopDiv.id = 'stop-' + stopId;
+
+        let hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.value = stopId;
+
+        let stopInfoDiv = document.createElement('div');
+        stopInfoDiv.classList.add('stop-info');
+
+        let label = document.createElement('label');
+        label.textContent = 'Stop Name:';
+
+        let span = document.createElement('span');
+        span.textContent = stopName;
+
+        let removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.classList.add('delete-stop-button');
+        removeButton.textContent = 'Remove Stop';
+        removeButton.onclick = function() {
+        removeStopFromTourSession(tourId, stopId);
+    };
+
+        // Assemble the stop item
+        stopInfoDiv.appendChild(label);
+        stopInfoDiv.appendChild(span);
+        stopInfoDiv.appendChild(removeButton);
+        stopDiv.appendChild(hiddenInput);
+        stopDiv.appendChild(stopInfoDiv);
+
+        // Append the new stop to the stops section
+        document.getElementById('stopsSection').appendChild(stopDiv);
+    }
+
+    function removeStopFromDom(stopId) {
+        let stopDiv = document.getElementById('stop-' + stopId);
+        if (stopDiv) {
+            stopDiv.remove();
+        }
+    }
+
+    function bindDeleteButtons() {
+        let deleteButtons = document.querySelectorAll('.delete-stop-button');
+        deleteButtons.forEach(function(button) {
+            button.onclick = function() {
+                let stopIndex = this.getAttribute('data-stop-index');
+                confirmDeleteStop(stopIndex);
+            };
+        });
+    }
+</script>
+</body>
+</html>

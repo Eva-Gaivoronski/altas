@@ -15,6 +15,8 @@ public class UserImage extends AbstractEntity {
     @Lob
     private byte[] imageData;
 
+    public UserImage() { }
+
     public UserImage(User user, byte[] imageData) {
         super();
         this.user = user;

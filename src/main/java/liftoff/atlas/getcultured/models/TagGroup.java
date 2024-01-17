@@ -14,6 +14,8 @@ public class TagGroup extends AbstractEntity {
     @OneToMany(mappedBy = "tagGroup")
     private List<Tag> tags;
 
+    public TagGroup() { }
+
     public TagGroup(String label, String domain, boolean isActive, List<Tag> tags) {
         super();
         this.label = label;

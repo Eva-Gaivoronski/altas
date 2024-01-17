@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tour List</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Tour List</h2>
+
+    <!-- Display the list of tours -->
+    <table>
+        <thead>
+        <tr>
+            <th>Tour ID</th>
+            <th>Name</th>
+            <th>Estimated Distance</th>
+<!--            <th>Duration (minutes)</th>-->
+<!--            <th>Rating</th>-->
+<!--            <th>Author's Username</th>-->
+<!--            <th>City</th>-->
+            <th>Number of Stops</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iterate over the list of tours -->
+        <tr th:each="tour : ${tours}">
+            <td th:text="${tour.id}"></td>
+            <td th:text="${tour.name}"></td>
+            <td th:text="${tour.estimatedLength}" style="text-align: center;"></td>
+<!--            <td th:text="${tour.estimatedTravelTime}" style="text-align: center;"></td>-->
+<!--            <td th:text="${tour.userRating}" style="text-align: center;"></td>-->
+<!--            <td th:text="${tour.author}"></td>-->
+<!--            <td th:text="${tour.city}"></td>-->
+            <td th:text="${tour.stops.size()}" style="text-align: center;"></td>
+
+            <td class="action-buttons">
+                <!-- Link to view the details of a tour -->
+                <a th:href="@{/tours/view/{tourId}(tourId=${tour.id})}" style="color: green;">View</a>
+                <!-- Link to delete a tour -->
+                <form th:action="@{/tours/{tourId}/delete(tourId=${tour.id})}" method="post">
+                    <button type="submit" onclick="return confirmDelete()">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+
+        <script>
+            function confirmDelete() {
+                return confirm('Are you sure you want to delete this tour?');
+            }
+        </script>
+    </table>
+
+    <!-- Link to create a new tour -->
+    <p><a th:href="@{/tours/create}">Create a New Tour</a></p>
+
+    <!-- Back to Index link -->
+    <p><a href="/tours/index" class="back-to-index">Back to Homepage</a></p>
+
+</div>
+
+</body>
+</html>
+

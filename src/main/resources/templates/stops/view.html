@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${stop.name} + ' Details'">Stop Details</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1 th:text="${stop.name}">Stop Name</h1>
+
+    <!-- Displaying stop details -->
+    <div class="stop-details">
+        <p><strong>Description:</strong> <span th:text="${stop.stopDescription}">Description</span></p>
+        <p><strong>Address:</strong> <span th:text="${stop.streetAddress}">Street Address</span>,
+            <span th:text="${stop.cityName}">City</span>,
+            <span th:text="${stop.stateName}">State</span>,
+            <span th:text="${stop.zipCode}">Zip Code</span></p>
+<!--        <p><strong>Hours of Operation:</strong> <span th:text="${stop.hoursOfOperation}">Hours</span></p>-->
+        <p><strong>Rating:</strong> <span th:text="${stop.stopRating}">Rating</span></p>
+
+        <p>Current context: <span th:text="${context}"></span></p>
+
+        <!-- Image display -->
+        <img th:src="${stop.imagePath != null ? '/' + stop.imagePath : '/defaultLogo/DefaultLogo.jpg'}" alt="Stop Image" class="stop-image"/>
+
+
+    </div>
+
+    <!-- Conditional links based on context -->
+    <!-- Conditional link to go back to the Tour Update page -->
+    <div th:if="${context == 'update'}">
+        <p><a th:href="@{/tours/update/{tourId}(tourId=${tourId}, context='update')}" class="back-to-tour-update">Back to Tour Update</a></p>
+    </div>
+    <div th:if="${tourId != null && context != 'update'}">
+        <p><a th:href="@{/tours/view/{tourId}(tourId=${tourId})}" class="back-to-list">Back to Tour</a></p>
+    </div>
+
+    <div th:if="${context == 'create'}">
+        <!-- Link to go back to the stop list with context -->
+        <p><a th:href="@{/stops(context='create')}" class="back-to-list">Back to Stop List</a></p>
+        <!-- Link to go back to tour creation -->
+        <p><a href="/tours/create" class="back-to-list">Continue Tour Creation</a></p>
+    </div>
+
+    <div th:if="${context == 'none' && tourId == null}">
+        <!-- Default back to stop list link -->
+        <p><a href="/stops" class="back-to-list">Back to Stop List</a></p>
+    </div>
+
+<!--    No need now for not adding stops to update-->
+<!--    &lt;!&ndash; Conditional link to go back to the Stop List while updating a tour &ndash;&gt;-->
+<!--    <div th:if="${context == 'update' && tourId == {tourId}}">-->
+<!--        &lt;!&ndash; Default back to stop list link with context &ndash;&gt;-->
+<!--        <p><a th:href="@{/tours/update/{tourId}(context='update')}" class="back-to-list">Back to Stop List</a></p>-->
+<!--    </div>-->
+
+</div>
+</body>
+</html>

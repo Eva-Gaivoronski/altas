@@ -9,12 +9,87 @@ import net.minidev.json.parser.ParseException;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 public class GoogleMethodTests extends AbstractTest {
+
+    @Test
+    public void givenGeocodingRequestWithNoAcceptHeader_whenRequestIsExecuted_thenDefaultResponseContentTypeIsJson() {
+        System.out.println("-----\nTest - givenGeocodingRequestWithNoAcceptHeader_whenRequestIsExecuted_thenDefaultResponseContentTypeIsJson");
+
+        final String apiKey = "&key="
+                + System.getenv("GOOGLE_API_KEY");
+        final String urlStart = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+        final String urlEnd = "&region=us";
+        final String city = "KansasCity";
+        final String url = urlStart + city + urlEnd + apiKey;
+
+        // Given
+        String jsonMimeType = "application/json";
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .build();
+
+        try {
+            // When
+            HttpResponse<String> res = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            Map<String, List<String>> resMap = res.headers().map();
+            List<String> resContentType = resMap.get("content-type");
+            for (String o : resContentType) {
+                // Then
+                String[] mimeType = o.split(";");
+                assertEquals(jsonMimeType, mimeType[0]);
+                System.out.println("Expected: " + jsonMimeType + "\nActual: " + mimeType[0]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void givenPlacesRequestWithNoAcceptHeader_whenRequestIsExecuted_thenDefaultResponseContentTypeIsJson(){
+        System.out.println("-----\nTest - givenPlacesRequestWithNoAcceptHeader_whenRequestIsExecuted_thenDefaultResponseContentTypeIsJson");
+
+        final String apiKey = "&key="
+                + System.getenv("GOOGLE_API_KEY");
+        final String uriStart = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
+        final String radius = "&=5000";
+        final String searchTerm = "tattooedmom";
+        final String locale = "39.9533116,-75.1703448";
+        final String category = "restaurant";
+        final String url = uriStart + searchTerm + "&=" + locale + "&=" + category + radius + apiKey;
+
+        // Given
+        String jsonMimeType = "application/json";
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .build();
+
+        try {
+            // When
+            HttpResponse<String> res = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            Map<String, List<String>> resMap = res.headers().map();
+            List<String> resContentType = resMap.get("content-type");
+            for (String o : resContentType) {
+                // Then
+                String[] mimeType = o.split(";");
+                assertEquals(jsonMimeType, mimeType[0]);
+                System.out.println("Expected: " + jsonMimeType + "\nActual: " + mimeType[0]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void fetchGeocodingResponseDoesNotExists () throws IOException, ParseException {
@@ -27,9 +102,13 @@ public class GoogleMethodTests extends AbstractTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
+            // Given
             GeocodingResponse geocodingResponse = objectMapper.readValue(ReadJSON.fetchJSON(url), GeocodingResponse.class);
 
+            // When
             String status = geocodingResponse.getStatus();
+
+            //Then
             assertEquals("ZERO_RESULTS", status);
             System.out.println("-----\nTest - fetchGeocodingResponseDoesNotExists");
             System.out.println("Expected: ZERO_RESULTS" + "\nActual: " + status);
@@ -40,7 +119,9 @@ public class GoogleMethodTests extends AbstractTest {
     }
 
     @Test
-    public void fetchPlacesJsonTest() throws IOException, ParseException, InterruptedException {
+    public void fetchPlacesTest() throws IOException, ParseException, InterruptedException {
+        System.out.println("-----\nTest - fetchPlacesTest");
+
         final String apiKey = "&key="
                 + System.getenv("GOOGLE_API_KEY");
         final String uriStart = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
@@ -56,8 +137,6 @@ public class GoogleMethodTests extends AbstractTest {
 
         List<Map<String, Object>> resultList = PlacesResponseParser.parseResults(ReadJSON.fetchJSON(uri));
 
-        System.out.println("-----");
-        System.out.println("Test - fetchPlacesJsonTest");
         Map <Integer, Object> formattedList = new HashMap<>();
         int k = 0;
 
@@ -83,18 +162,15 @@ public class GoogleMethodTests extends AbstractTest {
             formattedResult.put("Types", types);
             formattedResult.put("Rating", rating);
             formattedResult.put("Price Level", priceLevel);
-//            For original data type:
+            // For original data type:
             formattedResult.put("Location", location);
-//            For readability:
+            // For readability:
 //            formattedResult.put("Location", Arrays.toString(location));
 
             formattedList.put(k, formattedResult);
             k++;
         }
 
-//        for (int i = 0; i < formattedList.size(); i++) {
-//            System.out.println(i + ": " + formattedList.get(i));
-//        }
         Map firstResult = (Map) formattedList.get(0);
         System.out.println("Expected: " + mockName);
         System.out.println("Actual: " + firstResult.get("Name"));
@@ -108,9 +184,6 @@ public class GoogleMethodTests extends AbstractTest {
         List types = (List) firstResult.get("Types");
         System.out.println("Actual: " + types.contains(mockType));
         assertTrue(types.contains(mockType));
-//        for (Object type : types) {
-//            System.out.println("Actual: " + type);
-//        }
     }
 
     @Test
@@ -141,25 +214,22 @@ public class GoogleMethodTests extends AbstractTest {
                 location = new String[]{String.valueOf(latitude), String.valueOf(longitude)};
 
             }
-
+            // Flattening properties of result objects to be more accessible
             Map<String, Object> formattedResult = new HashMap<>();
             formattedResult.put("Name", name);
             formattedResult.put("Address", address);
             formattedResult.put("Types", types);
             formattedResult.put("Rating", rating);
             formattedResult.put("Price Level", priceLevel);
-//            For original data type:
+            // For original data type:
             formattedResult.put("Location", location);
-//            For readability:
+            // For readability:
 //            formattedResult.put("Location", Arrays.toString(location));
 
             formattedList.put(k, formattedResult);
             k++;
         }
 
-//        for (int i = 0; i < formattedList.size(); i++) {
-//            System.out.println(i + ": " + formattedList.get(i));
-//        }
         Map firstResult = (Map) formattedList.get(0);
         System.out.println("Expected: " + mockName);
         System.out.println("Actual: " + firstResult.get("Name"));
@@ -173,14 +243,11 @@ public class GoogleMethodTests extends AbstractTest {
         List types = (List) firstResult.get("Types");
         System.out.println("Actual: " + types.contains(mockType));
         assertTrue(types.contains(mockType));
-//        for (Object type : types) {
-//            System.out.println("Actual: " + type);
-//        }
     }
 
     @Test
-    public void fetchGeocodeJsonTest() throws IOException, ParseException, InterruptedException {
-
+    public void fetchGeocodeTest() throws IOException, ParseException, InterruptedException {
+        System.out.println("-----\nTest - fetchGeocodeTest");
         final String apiKey = "&key="
                 + System.getenv("GOOGLE_API_KEY");
         final String urlStart = "https://maps.googleapis.com/maps/api/geocode/json?address=";
@@ -188,10 +255,6 @@ public class GoogleMethodTests extends AbstractTest {
         final String city = "KansasCity";
         final String url = urlStart + city + urlEnd + apiKey;
 
-//        System.out.println(url);
-
-        System.out.println("-----");
-        System.out.println("Test - fetchGeocodeJsonTest");
         List<Map<String, Object>> resultList = GeocodingResponseParser.parseResults(ReadJSON.fetchJSON(url));
 
         String mockAddress = "Kansas City, MO, USA";
@@ -199,13 +262,10 @@ public class GoogleMethodTests extends AbstractTest {
         Double mockLongitude = -94.5785667;
 
         for (Map<String, Object> result : resultList) {
-//            System.out.println("Formatted Address: " + result.get("Formatted Address"));
 
-            // Accessing latitude and longitude
             Double latitude = (Double) result.get("Latitude");
             Double longitude = (Double) result.get("Longitude");
 
-            // Accessing address
             String formatted_address = (String) result.get("Formatted Address");
 
             try {
@@ -227,17 +287,16 @@ public class GoogleMethodTests extends AbstractTest {
 
     @Test
     public void cityGeocoderIsSame() throws IOException, ParseException {
+        System.out.println("-----\nTest - cityGeocoderIsSame");
         List<Map<String, Object>> resultList = GeocodingResponseParser.parseResults(ReadJSON.readLocalJSONFile("src/test/java/liftoff/atlas/getcultured/PostMapTest.JSON"));
 
         String mockAddress = "Kansas City, MO, USA";
         Double mockLatitude = 39.0997265;
         Double mockLongitude = -94.5785667;
 
-        System.out.println("-----");
-        System.out.println("Test - cityGeocoderIsSame");
 
+        // Accessing each result
         for (Map<String, Object> result : resultList) {
-//            System.out.println("Formatted Address: " + result.get("Formatted Address"));
 
             // Accessing latitude and longitude
             Double latitude = (Double) result.get("Latitude");
@@ -259,73 +318,54 @@ public class GoogleMethodTests extends AbstractTest {
             System.out.println("Actual: " + latitude);
             System.out.println("Expected: " + mockLongitude);
             System.out.println("Actual: " + longitude);
-
         }
     }
 
-    // Below is a working HTTP GET-Method call to Google Maps Preset:
-//        System.out.println("HTTP-GET JSON:");
-//        HttpClient client = HttpClient.newHttpClient();
-//        HttpRequest request = HttpRequest.newBuilder()
-//                .uri(URI.create("https://maps.googleapis.com/maps/api/geocode/json?address=KansasCity&region=us&key=ADD_KEY_HERE"))
-//                .build();
-//
-//        HttpResponse<String> response =
-//                client.send(request, HttpResponse.BodyHandlers.ofString());
-//
-//        Object cityJSON = new JSONParser(JSONParser.MODE_JSON_SIMPLE)
-//                .parse(response.body());
-//        System.out.println(cityJSON);
-//        System.out.println("-----");
-    // Below is the reading the local JSON file to test against.
-//        try {
-//            Object testCityJSON = new JSONParser(JSONParser.MODE_JSON_SIMPLE)
-//                    .parse(new FileReader("src/test/java/liftoff/atlas/getcultured/PostMapTest.JSON"));
-//            System.out.println(testCityJSON);
-//            System.out.println("-----");
-//            JSONObject testJSONObj = (JSONObject) testCityJSON;
-//            JSONArray jsonObj1 = (JSONArray) testJSONObj.get("rows");
-//            assertEquals(cityJSON, testCityJSON);
-//            Data data = new Gson().fromJson(testCityJSON.toString(), Data.class);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+    /* HTTP GET-Method call to Google Maps Geocoding Format:
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://maps.googleapis.com/maps/api/geocode/json?address=KansasCity&region=us&key=ADD_KEY_HERE"))
+                .build();
 
-    // Working original Parser code
-//    ObjectMapper objectMapper = new ObjectMapper();
-//        JSONObject json1 = readLocalJSONObject("src/test/java/liftoff/atlas/getcultured/PostMapTest.JSON");
-//        try {
-//            GeocodingResponse geocodingResponse = objectMapper.readValue(json1.toJSONString(), GeocodingResponse.class);
-//
-//            List<GeocodingResult> results = geocodingResponse.getResults();
-//            for (GeocodingResult result : results) {
-//                System.out.println("Formatted Address: " + result.getFormattedAddress());
-//
-//                List<AddressComponent> addressComponents = result.getAddressComponents();
-//                for (AddressComponent addressComponent : addressComponents) {
-//                    System.out.println("Long Name: " + addressComponent.getLongName());
-//                    System.out.println("Short Name: " + addressComponent.getShortName());
-//                    System.out.println("Types: " + addressComponent.getTypes());
-//                }
-//
-//                Geometry geometry = result.getGeometry();
-//                if (geometry != null) {
-//                    Location location = geometry.getLocation();
-//                    if (location != null) {
-//                        double lat = location.getLat();
-//                        double lng = location.getLng();
-//                        System.out.println("Latitude: " + lat);
-//                        System.out.println("Longitude: " + lng);
-//                    }
-//                }
-//
-//                System.out.println("Place ID: " + result.getPlaceId());
-//                System.out.println("Types: " + result.getTypes());
-//            }
-//
-//            System.out.println("Status: " + geocodingResponse.getStatus());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        HttpResponse<String> response =
+                client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        Object cityJSON = new JSONParser(JSONParser.MODE_JSON_SIMPLE)
+                .parse(response.body());
+        System.out.println(cityJSON);
+        System.out.println("-----");
+     Below is the reading the local JSON file to test against.
+        try {
+            Object testCityJSON = new JSONParser(JSONParser.MODE_JSON_SIMPLE)
+                    .parse(new FileReader("src/test/java/liftoff/atlas/getcultured/PostMapTest.JSON"));
+            System.out.println(testCityJSON);
+            System.out.println("-----");
+            JSONObject testJSONObj = (JSONObject) testCityJSON;
+            JSONArray jsonObj1 = (JSONArray) testJSONObj.get("rows");
+            assertEquals(cityJSON, testCityJSON);
+            Data data = new Gson().fromJson(testCityJSON.toString(), Data.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+     Working original Parser code
+    ObjectMapper objectMapper = new ObjectMapper();
+        JSONObject json1 = readLocalJSONObject("src/test/java/liftoff/atlas/getcultured/PostMapTest.JSON");
+        try {
+            GeocodingResponse geocodingResponse = objectMapper.readValue(json1.toJSONString(), GeocodingResponse.class);
+
+            List<GeocodingResult> results = geocodingResponse.getResults();
+            for (GeocodingResult result : results) {
+                System.out.println("Formatted Address: " + result.getFormattedAddress());
+
+                List<AddressComponent> addressComponents = result.getAddressComponents();
+                Geometry geometry = result.getGeometry();
+                if (geometry != null) {
+                    Location location = geometry.getLocation();
+                    if (location != null) {
+                        double lat = location.getLat();
+                        double lng = location.getLng();
+                    }
+                } */
 
 }
