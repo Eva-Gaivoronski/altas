@@ -21,4 +21,10 @@ public class AuthorizationController {
     public String renderUnauthorizedAccessPage() {
         return "You do not have authorization to access that page.";
     }
+
+    @GetMapping(path={"admin","admin/"})
+    @ResponseBody
+    public String renderAdminPanel() {
+        return "This is where the admin panel will go. I just don't have it yet.";
+    }
 }

@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-@Configuration
 public class AuthenticationFilter implements HandlerInterceptor {
 
     @Autowired
@@ -43,12 +42,15 @@ public class AuthenticationFilter implements HandlerInterceptor {
     );
 
     private static boolean isWhitelisted(String path) {
+
+        // Checks if path is pat of the explicitly whitelisted URIs
         for (String pathRoot : publicWhitelist) {
             if (path.equals(pathRoot)) {
                 return true;
             }
         }
 
+        // Checks if path starts with explicitly whitelisted wildcard URIs
         for (String pathRoot : whitelistWildcardUserURIs) {
             if (path.startsWith(pathRoot)) {
                 return true;
