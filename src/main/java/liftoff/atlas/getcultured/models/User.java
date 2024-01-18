@@ -36,7 +36,7 @@ public class User {
     @JoinColumn(name = "user_profile_detail_id", referencedColumnName = "profile_id")
     private UserProfileDetails userProfileDetails;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_usergroup",
             joinColumns = @JoinColumn(name="user_id"),

@@ -42,10 +42,6 @@ public class AuthenticationFilter implements HandlerInterceptor {
             "/user/password-reset/" // handles authorizing password reset tby token
     );
 
-//    private static final List<String> adminOnlyPages = Arrays.asList(
-//            "/admin"
-//    );
-
     private static boolean isWhitelisted(String path) {
         for (String pathRoot : publicWhitelist) {
             if (path.equals(pathRoot)) {
@@ -80,16 +76,13 @@ public class AuthenticationFilter implements HandlerInterceptor {
         HttpSession session = request.getSession();
         User authenticatedUser = authenticationController.getUserFromSession(session);
 
-//        if(authenticatedUser != null) {
-//            Hibernate.initialize(authenticatedUser.getUserGroups());
-//        }
 
         if(isAdminOnly(requestURI)) {
             if (authenticatedUser != null && authenticatedUser.getUserGroups().toString().contains("admin")) {
                 return true;
             }
 
-            // Not an admin, redirect to unauthorized page
+            // No 'admin' UserGroup found in User's membership Set, redirect to unauthorized page
             response.sendRedirect("/unauthorized");
             return false;
         }
