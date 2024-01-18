@@ -18,27 +18,11 @@
 <body>
 
     <nav th:fragment="user-nav" class="navbar">
-        <a th:href="@{/}">GetCultured</a> ::: Test User Nav:
-        <a th:href="@{/user/login}">Log In</a> /
-        <a th:href="@{/user/sign-up}">Sign-Up</a> /
-        <a th:href="@{/user/logout}">Logout</a>
-        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-        <a th:href="@{/user/profile/edit}">Edit Profile</a> /
-        <a th:href="@{/user/profile/view}">View Profile</a>
-
-        <!-- TODO: Add feature to extract username if logged in; else give (No User) // For testing -->
-        <!-- <span th:if="${someObject.someProperty != null}" th:text="${someObject.someProperty}">(No User)</span>-->
-
+        <a th:href="@{/}">GetCultured</a>
+        <a th:href="@{/tours}">Tour List</a>
     </nav>
 
-    <div th:fragment="user-menu" class="user-menu-dropdown">
-        <button onclick="expandUserMenu()" class="user-dropdown-button">&lt;Username&gt;</button>
-        <div id="userDropdownOptions" class="user-dropdown-options">
-            <a th:href="@{/user/profile/edit}">Edit My Profile</a>
-            <a th:href="@{/user/profile/view}">View My Profile</a>
-            <a th:href="@{/user/logout}">Logout</a>
-        </div>
-    </div>
+
 
 </body>
 </html>
