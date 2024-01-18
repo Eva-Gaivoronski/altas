@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
 import java.util.Set;
 
@@ -260,7 +261,7 @@ public class UserController {
     }
 
     @PostMapping("reset-password")
-    public String processResetPasswordForm(@ModelAttribute @Valid PasswordResetFormDTO passwordResetFormDTO, Errors errors, Model model, HttpServletRequest request, @SessionAttribute("userToResetPasswordFor") User userToResetPasswordFor) {
+    public String processResetPasswordForm(@ModelAttribute @Valid PasswordResetFormDTO passwordResetFormDTO, Errors errors, Model model, HttpServletRequest request, @SessionAttribute("userToResetPasswordFor") User userToResetPasswordFor, SessionStatus sessionStatus) {
 
         HttpSession session = request.getSession();
 
@@ -281,11 +282,19 @@ public class UserController {
         userRepository.save(userToResetPasswordFor);
 
         // Remove session attribute after password is changed as we no longer need it.
-        session.removeAttribute("userToResetPasswordFor");
+        sessionStatus.setComplete();
 
-        System.out.println("Session attribute 'userToResetPasswordF': " + session.getAttribute("userToResetPasswordFor"));
+//        session.setAttribute("userToResetPasswordFor", null);
+
+//        try {
+//            session.invalidate();
+//        } catch (IllegalStateException e) {
+//            System.err.println("Session already invalidated");
+//        }
+
+//        System.out.println("Session attribute 'userToResetPasswordF': " + session.getAttribute("userToResetPasswordFor"));
         System.out.println("Password update successful for account registered to " + userToResetPasswordFor.getEmailAddress() + ". Redirecting to homepage.");
-        return "redirect:";
+        return "redirect:/";
     }
 
     @GetMapping("profile/edit")
