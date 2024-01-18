@@ -26,6 +26,7 @@ public class AuthenticationFilter implements HandlerInterceptor {
             "/user/sign-up",
             "/user/login",
             "/user/forgot-password",
+            "/user/reset-password",
             "/script.js",
             "/styles.css",
             "/user-styles.css"

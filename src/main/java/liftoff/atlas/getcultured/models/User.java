@@ -67,6 +67,10 @@ public class User {
         return encoder.matches(password, passwordHash);
     }
 
+    public void updatePassword(String newPassword) {
+        this.passwordHash = encoder.encode(newPassword);
+    }
+
     public void addUserGroupToUser(UserGroup userGroup) {
         this.getUserGroups().add(userGroup);
         userGroup.getUsers().add(this);

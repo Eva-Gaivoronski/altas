@@ -9,10 +9,7 @@ import liftoff.atlas.getcultured.models.data.SecureTokenRepository;
 import liftoff.atlas.getcultured.models.data.UserGroupRepository;
 import liftoff.atlas.getcultured.models.data.UserProfileDetailsRepository;
 import liftoff.atlas.getcultured.models.data.UserRepository;
-import liftoff.atlas.getcultured.models.dto.ForgotPasswordFormDTO;
-import liftoff.atlas.getcultured.models.dto.LoginFormDTO;
-import liftoff.atlas.getcultured.models.dto.SignUpFormDTO;
-import liftoff.atlas.getcultured.models.dto.UserProfileDetailsEditFormDTO;
+import liftoff.atlas.getcultured.models.dto.*;
 import liftoff.atlas.getcultured.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +21,7 @@ import java.util.Set;
 
 @Controller
 @RequestMapping("user")
+@SessionAttributes("userToResetPasswordFor")
 public class UserController {
 
     @Autowired
@@ -211,7 +209,6 @@ public class UserController {
     }
 
     @GetMapping("password-reset/{tokenValue}")
-    @ResponseBody
     public String resetPasswordByValidResetToken(@PathVariable String tokenValue, HttpServletRequest request) {
         HttpSession session = request.getSession();
         SecureToken validToken = secureTokenRepository.findByTokenValue(tokenValue);
@@ -230,15 +227,65 @@ public class UserController {
                 validToken.deactivateToken();
                 secureTokenRepository.save(validToken);
 
-                return "Success! Now send User to password reset form page. <a href=\"/\">Return to Homepage</a>";
+//                return "Success! Now send User to password reset form page. <a href=\"/\">Return to Homepage</a>";
+                return "redirect:/user/reset-password";
             }
 
             // Token exists in the repo, but is no longer active
-            return "That token is no longer active. <a href=\"/\">Return to Homepage</a>";
+            System.out.println("Session user tried to access a token that was no longer active. Redirecting to login page.");
+            return "redirect:/user/login";
         }
 
         // There is no valid token found in the repo
-        return "Something went wrong. That token does not exist. <a href=\"/\">Return to Homepage</a>";
+        System.out.println("Session user tried to access a token that never existed. Redirecting to login page.");
+        return "redirect:/user/login";
+    }
+
+    @GetMapping("reset-password")
+    public String displayResetPasswordForm(HttpServletRequest request, Model model, @SessionAttribute(value = "userToResetPasswordFor", required = false) User userToResetPasswordFor) {
+        HttpSession session = request.getSession();
+
+        // If the Object returned from the session above if not an instance of User (including null)
+        if(userToResetPasswordFor == null) {
+            System.out.println("Session user tried to access reset password form without appropriate object stored in session attribute");
+            return "redirect:/user/forgot-password";
+        }
+
+        // System output of what account was stored in session prior to this Get request
+        System.out.println("The account registered to " + userToResetPasswordFor.getEmailAddress() + " is being brought into the reset password form page.");
+
+        model.addAttribute(new PasswordResetFormDTO());
+
+        return "user/password-reset";
+    }
+
+    @PostMapping("reset-password")
+    public String processResetPasswordForm(@ModelAttribute @Valid PasswordResetFormDTO passwordResetFormDTO, Errors errors, Model model, HttpServletRequest request, @SessionAttribute("userToResetPasswordFor") User userToResetPasswordFor) {
+
+        HttpSession session = request.getSession();
+
+        if(errors.hasErrors()) {
+            return "user/password-reset";
+        }
+
+        String newPassword = passwordResetFormDTO.getNewPassword();
+        String verifyNewPassword = passwordResetFormDTO.getVerifyNewPassword();
+
+        if (!newPassword.equals(verifyNewPassword)) {
+            errors.rejectValue("verifyPassword", "passwords.mismatch", "Passwords do not match; please enter them again");
+            return "user/password-reset";
+        }
+
+        // Update the password for user
+        userToResetPasswordFor.updatePassword(passwordResetFormDTO.getNewPassword());
+        userRepository.save(userToResetPasswordFor);
+
+        // Remove session attribute after password is changed as we no longer need it.
+        session.removeAttribute("userToResetPasswordFor");
+
+        System.out.println("Session attribute 'userToResetPasswordF': " + session.getAttribute("userToResetPasswordFor"));
+        System.out.println("Password update successful for account registered to " + userToResetPasswordFor.getEmailAddress() + ". Redirecting to homepage.");
+        return "redirect:";
     }
 
     @GetMapping("profile/edit")
