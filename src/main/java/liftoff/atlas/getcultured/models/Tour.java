@@ -70,8 +70,7 @@ public class Tour extends AbstractEntity {
     public Tour() {
     }
 
-    public Tour(String summaryDescription, Double estimatedLength,
-                Double estimatedTravelTime, Double userRating, User author, MapMarker location, City city, String imagePath, int updateId) {
+    public Tour(String summaryDescription, Double estimatedLength, Double estimatedTravelTime, Double userRating, User author, MapMarker location, City city, String imagePath, int updateId) {
         super();
         this.summaryDescription = summaryDescription;
         this.estimatedLength = estimatedLength;

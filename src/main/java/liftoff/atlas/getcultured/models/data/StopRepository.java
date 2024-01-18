@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface StopRepository extends CrudRepository<Stop, Integer> {
-    List<Stop> findByTour(Tour tour);
+//    List<Stop> findByTour(Tour tour);
+
 }

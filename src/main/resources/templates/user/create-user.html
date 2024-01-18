@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>New User Sign-Up - Create User</title>
+
+        <link th:replace="~{fragments :: user-styles}" />
+        <link th:replace="~{fragments :: styles}" />
+
+    </head>
+    <body>
+        <nav th:replace="~{fragments :: user-nav}"></nav>
+        <h1>User Creation Form</h1>
+        <form method="post">
+            <div class="form-group">
+                <label th:for="username">Desired Username: </label>
+                <input th:field="${signUpFormDTO.username}" />
+                <p th:errors="${signUpFormDTO.username}" class="error-class"></p>
+            </div>
+
+            <div class="form-group">
+                <label th:for="emailAddress">Email Address: </label>
+                <input th:field="${signUpFormDTO.emailAddress}" />
+                <p th:errors="${signUpFormDTO.emailAddress}" class="error-class"></p>
+            </div>
+
+            <div class="form-group">
+                <label th:for="password">Set Password: </label>
+                <input th:field="${signUpFormDTO.password}" type="password" />
+                <p th:errors="${signUpFormDTO.password}" class="error-class"></p>
+            </div>
+
+            <div class="form-group">
+                <label th:for="verifyPassword">Verify Password: </label>
+                <input th:field="${signUpFormDTO.verifyPassword}" type="password" />
+                <p th:errors="${signUpFormDTO.verifyPassword}" class="error-class"></p>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create Account" />
+            </div>
+        </form>
+        <p>Have an account already? <a href="./login">Log-In Instead!</a></p>
+    </body>
+</html>

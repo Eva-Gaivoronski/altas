@@ -3,8 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <link th:replace="~{fragments :: user-styles}" />
+    <link th:replace="~{fragments :: styles}" />
+
+    <script src="script.js"></script>
 </head>
 <body>
+    <nav th:replace="~{fragments :: user-nav}"></nav>
+    <div th:replace="~{fragments :: user-menu}"></div>
 <h1>Get Cultured!</h1>
 <p>Hello, world!</p>
 

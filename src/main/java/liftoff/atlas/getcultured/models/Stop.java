@@ -48,7 +48,9 @@ public class Stop extends AbstractEntity {
     @OneToMany(mappedBy = "stop")
     private List<StopTag> stopTag;
 
-    public Stop(int id, String name, Tour tour, boolean stopStatus, String stopDescription, String streetAddress, String cityName, String stateName, int zipCode, Double latitude, Double longitude, MapMarker mapMarker, int cost, String hoursOfOperation, int stopRating, String category, boolean popularStopDesignation, List<StopTag> stopTags) {
+    public Stop() { }
+
+    public Stop(List<Tour> tours, boolean stopStatus, String stopDescription, String streetAddress, String cityName, String stateName, int zipCode, Double latitude, Double longitude, MapMarker mapMarker, int cost, String hoursOfOperation, int stopRating, String category, boolean popularStopDesignation, List<StopTag> stopTags, String imagePath, int updateId) {
         super();
         this.tours = tours;
         this.stopStatus = stopStatus;
@@ -68,10 +70,6 @@ public class Stop extends AbstractEntity {
         this.stopTag = stopTags;
         this.imagePath = imagePath;
         this.updateId = updateId;
-    }
-
-    public Stop() {
-
     }
 
     public void setUpdateId(int updateId) {
