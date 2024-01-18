@@ -6,23 +6,27 @@ import jakarta.servlet.http.HttpSession;
 import liftoff.atlas.getcultured.controllers.AuthenticationController;
 import liftoff.atlas.getcultured.models.User;
 import liftoff.atlas.getcultured.models.data.UserRepository;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+@Configuration
 public class AuthenticationFilter implements HandlerInterceptor {
-
-    @Autowired
-    UserRepository userRepository;
 
     @Autowired
     AuthenticationController authenticationController;
 
+    @Autowired
+    UserRepository userRepository;
+
     private static final List<String> publicWhitelist = Arrays.asList(
             "/",
+            "/unauthorized",
             "/user/sign-up",
             "/user/login",
             "/user/forgot-password",
@@ -32,10 +36,15 @@ public class AuthenticationFilter implements HandlerInterceptor {
             "/user-styles.css"
     );
 
-    private static final List<String> whitelistUserWildcards = Arrays.asList(
+    // Whitelists URIs related to /user/*/*, primarily for SecureToken values passed into URIs
+    private static final List<String> whitelistWildcardUserURIs = Arrays.asList(
             "/user/verifyEmail/",
             "/user/password-reset/" // handles authorizing password reset tby token
     );
+
+//    private static final List<String> adminOnlyPages = Arrays.asList(
+//            "/admin"
+//    );
 
     private static boolean isWhitelisted(String path) {
         for (String pathRoot : publicWhitelist) {
@@ -44,7 +53,7 @@ public class AuthenticationFilter implements HandlerInterceptor {
             }
         }
 
-        for (String pathRoot : whitelistUserWildcards) {
+        for (String pathRoot : whitelistWildcardUserURIs) {
             if (path.startsWith(pathRoot)) {
                 return true;
             }
@@ -53,15 +62,39 @@ public class AuthenticationFilter implements HandlerInterceptor {
         return false;
     }
 
+    // All admin access will begin with this path
+    private static boolean isAdminOnly(String path) {
+        return path.startsWith("/admin");
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        if(isWhitelisted((request.getRequestURI()))) {
+
+        String requestURI = request.getRequestURI();
+
+        // If the URI path passed into isWhitelisted returns true, return true on the preHandle
+        if(isWhitelisted(requestURI)) {
             return true;
         }
 
         HttpSession session = request.getSession();
         User authenticatedUser = authenticationController.getUserFromSession(session);
 
+//        if(authenticatedUser != null) {
+//            Hibernate.initialize(authenticatedUser.getUserGroups());
+//        }
+
+        if(isAdminOnly(requestURI)) {
+            if (authenticatedUser != null && authenticatedUser.getUserGroups().toString().contains("admin")) {
+                return true;
+            }
+
+            // Not an admin, redirect to unauthorized page
+            response.sendRedirect("/unauthorized");
+            return false;
+        }
+
+        // TODO: Replace with more restrictive authorization; just because a user is authenticated doesn't mean they should have full run of a site; plus this will result in less mapping errors
         // If a User is returned from the session (not null), the session is authenticated and the URI request is allowed
         if (authenticatedUser != null) {
             return true;
