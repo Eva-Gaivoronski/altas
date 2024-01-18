@@ -283,7 +283,7 @@ public class TourController {
     @PostMapping("/update/{tourId}")
     public String updateTour(@PathVariable("tourId") Integer tourId,
                              @ModelAttribute("tourForm") TourForm tourForm,
-                             RedirectAttributes redirectAttributes) {
+                             RedirectAttributes redirectAttributes, SessionStatus sessionStatus) {
         try {
             Tour tour = tourService.getTourById(tourId);
             if (tour != null) {
@@ -291,6 +291,7 @@ public class TourController {
                 tour.setSummaryDescription(tourForm.getSummaryDescription());
                 tour.setEstimatedLength(tourForm.getEstimatedLength());
                 tourService.saveTour(tour, null); // Adjust saveTour method as necessary
+                sessionStatus.setComplete();
                 redirectAttributes.addFlashAttribute("successMessage", "Tour updated successfully!");
             } else {
                 redirectAttributes.addFlashAttribute("errorMessage", "Tour not found");
@@ -365,22 +366,22 @@ public class TourController {
 
 
 
-    @PostMapping("/update/{tourId}/finalize")
-    public String finalizeTourUpdate(@PathVariable("tourId") Integer tourId,
-                                     HttpSession session,
-                                     RedirectAttributes redirectAttributes) {
-        TourForm tourForm = (TourForm) session.getAttribute("tourForm");
-        if (tourForm != null) {
-            try {
-                Tour updatedTour = tourService.updateTourFromForm(tourId, tourForm, null);
-                session.removeAttribute("tourForm"); // Remove from session
-                redirectAttributes.addFlashAttribute("successMessage", "Tour updated successfully!");
-            } catch (Exception e) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Error updating the tour: " + e.getMessage());
-            }
-        }
-        return "redirect:/tours/view/" + tourId;
-    }
+//    @PostMapping("/update/{tourId}/finalize")
+//    public String finalizeTourUpdate(@PathVariable("tourId") Integer tourId,
+//                                     HttpSession session,
+//                                     RedirectAttributes redirectAttributes) {
+//        TourForm tourForm = (TourForm) session.getAttribute("tourForm");
+//        if (tourForm != null) {
+//            try {
+//                Tour updatedTour = tourService.updateTourFromForm(tourId, tourForm, null);
+//                session.removeAttribute("tourForm"); // Remove from session
+//                redirectAttributes.addFlashAttribute("successMessage", "Tour updated successfully!");
+//            } catch (Exception e) {
+//                redirectAttributes.addFlashAttribute("errorMessage", "Error updating the tour: " + e.getMessage());
+//            }
+//        }
+//        return "redirect:/tours/view/" + tourId;
+//    }
 
     // Method to add a stop to the tour in the session
     @PostMapping("/update/{tourId}/session/addStop")
